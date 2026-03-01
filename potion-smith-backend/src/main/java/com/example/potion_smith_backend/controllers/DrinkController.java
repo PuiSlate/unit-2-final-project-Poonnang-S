@@ -32,6 +32,8 @@ public class DrinkController {
     }
 
     //    Save a new drink to the database
+//    refactored from RequesParams to a RESTful controller by mapping the base path to /api/drinks, used @RequestBody to accept JSON
+//    for POST requests, persisted data using Spring Data JPA, and returned proper HTTP status codes using ResponseEntity.
 //    POST http://localhost:8080/api/drinks/
 
     @PostMapping
@@ -40,6 +42,14 @@ public class DrinkController {
         return new ResponseEntity<>(savedDrink, HttpStatus.CREATED);
 
     }
+
+//    Update the existing drink in the database
+//    PUT http://localhost:8080/api/drinks/3 (for example)
+
+
+
+//    Delete a drink from the database
+//    DELETE http://localhost:8080/api/drinks/3 (for example)
 }
 
 
