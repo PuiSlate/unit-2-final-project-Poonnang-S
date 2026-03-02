@@ -12,7 +12,7 @@ public class Drink {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private int Id;
+    private int id;
 
     private String drinkName;
     private String drinkInstructions;
@@ -31,7 +31,7 @@ public class Drink {
     }
 
     public int getId() {
-        return Id;
+        return id;
     }
 
     public String getDrinkName() {
@@ -86,7 +86,7 @@ public class Drink {
 
         Drink drink = (Drink) o;
 
-        if (Id != drink.Id) return false;
+        if (id != drink.id) return false;
         if (imageId != drink.imageId) return false;
         if (onWeeklyFeature != drink.onWeeklyFeature) return false;
         if (!drinkName.equals(drink.drinkName)) return false;
@@ -96,7 +96,7 @@ public class Drink {
 
     @Override
     public int hashCode() {
-        int result = Id;
+        int result = id;
         result = 31 * result + drinkName.hashCode();
         result = 31 * result + drinkInstructions.hashCode();
         result = 31 * result + drinkIngredients.hashCode();

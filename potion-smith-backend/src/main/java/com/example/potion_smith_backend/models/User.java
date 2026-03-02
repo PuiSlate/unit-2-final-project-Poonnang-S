@@ -9,6 +9,8 @@ import jakarta.persistence.Id;
 public class User {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
+    private int id;
+
     private String username;
     private String email;
     private String age;
@@ -19,6 +21,10 @@ public class User {
         this.username = username;
         this.email = email;
         this.age = age;
+    }
+
+    public int getId() {
+        return id;
     }
 
     public String getUsername() {
