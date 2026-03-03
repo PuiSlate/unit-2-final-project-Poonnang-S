@@ -22,7 +22,7 @@ public class ThemeCategoryController {
     }
 
     @GetMapping("")
-    public List<ThemeCategory> getAll() {
+    public List<?> getAll() {
         return repository.findAll();
     }
 }

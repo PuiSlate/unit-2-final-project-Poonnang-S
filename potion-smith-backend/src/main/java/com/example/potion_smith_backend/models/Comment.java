@@ -23,9 +23,11 @@ public class Comment {
 //    can have many comments. Therefore, we have a ManyToOne relationship between Comment and User,
 //    and Comment and Drink.
     @ManyToOne
+    @JoinColumn(name = "user_id", nullable = false)
     private User user;
 
     @ManyToOne
+    @JoinColumn(name = "drink_id", nullable = false)
     private Drink drink;
 
     public Comment() {
@@ -50,5 +52,29 @@ public class Comment {
 
     public void setCreatedAt(LocalDateTime createdAt) {
         this.createdAt = createdAt;
+    }
+
+    public int getId() {
+        return id;
+    }
+
+    public void setId(int id) {
+        this.id = id;
+    }
+
+    public User getUser() {
+        return user;
+    }
+
+    public void setUser(User user) {
+        this.user = user;
+    }
+
+    public Drink getDrink() {
+        return drink;
+    }
+
+    public void setDrink(Drink drink) {
+        this.drink = drink;
     }
 }
