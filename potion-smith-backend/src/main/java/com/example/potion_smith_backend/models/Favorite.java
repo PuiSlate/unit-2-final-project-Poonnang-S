@@ -1,5 +1,6 @@
 package com.example.potion_smith_backend.models;
 
+import com.fasterxml.jackson.annotation.JsonBackReference;
 import com.fasterxml.jackson.annotation.JsonManagedReference;
 import jakarta.persistence.*;
 
@@ -14,12 +15,12 @@ public class Favorite {
 
     @ManyToOne
     @JoinColumn(name = "user_id", nullable = false)
-    @JsonManagedReference
+    @JsonBackReference
     private User user;
 
     @ManyToOne
     @JoinColumn(name = "drink_id", nullable = false)
-    @JsonManagedReference
+    @JsonBackReference
     private Drink drink;
 
     public Favorite() {

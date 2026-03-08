@@ -1,6 +1,6 @@
 package com.example.potion_smith_backend.models;
 
-import com.fasterxml.jackson.annotation.JsonManagedReference;
+import com.fasterxml.jackson.annotation.JsonBackReference;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.Max;
 import jakarta.validation.constraints.Min;
@@ -22,12 +22,12 @@ public class Rating {
 //    and Rating and Drink.
     @ManyToOne
     @JoinColumn(name = "user_id", nullable = false)
-    @JsonManagedReference
+    @JsonBackReference
     private User user;
 
     @ManyToOne
     @JoinColumn(name = "drink_id", nullable = false)
-    @JsonManagedReference
+    @JsonBackReference
     private Drink drink;
 
 

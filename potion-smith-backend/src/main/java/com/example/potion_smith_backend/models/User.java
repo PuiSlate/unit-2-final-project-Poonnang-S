@@ -1,9 +1,10 @@
 package com.example.potion_smith_backend.models;
 
-import jakarta.persistence.Entity;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.GenerationType;
-import jakarta.persistence.Id;
+import com.fasterxml.jackson.annotation.JsonManagedReference;
+import jakarta.persistence.*;
+
+import java.util.ArrayList;
+import java.util.List;
 
 @Entity
 public class User {
@@ -14,6 +15,20 @@ public class User {
     private String username;
     private String email;
     private String age;
+
+//    One user can have many comments
+    @OneToMany (mappedBy = "user", cascade = CascadeType.ALL)
+    @JsonManagedReference
+    private List<Comment> comments = new ArrayList<>();
+
+    @OneToMany (mappedBy = "user", cascade = CascadeType.ALL)
+    @JsonManagedReference
+    private List<Favorite> favorites = new ArrayList<>();
+
+    @OneToMany (mappedBy = "user", cascade = CascadeType.ALL)
+    @JsonManagedReference
+    private List<Rating> ratings = new ArrayList<>();
+
 
     public User() {};
 

@@ -1,9 +1,10 @@
 package com.example.potion_smith_backend.models;
 
-import jakarta.persistence.Entity;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.GenerationType;
-import jakarta.persistence.Id;
+import com.fasterxml.jackson.annotation.JsonManagedReference;
+import jakarta.persistence.*;
+
+import java.util.ArrayList;
+import java.util.List;
 
 @Entity
 public class SpiritCategory {
@@ -12,6 +13,12 @@ public class SpiritCategory {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private int id;
     private String title;
+
+//    One SpiritCategory can have many drinks
+    @OneToMany (mappedBy = "spiritCategory", cascade = CascadeType.ALL)
+    @JsonManagedReference
+    private List<Drink> drinks = new ArrayList<>();
+
 
     public SpiritCategory() {};
 
