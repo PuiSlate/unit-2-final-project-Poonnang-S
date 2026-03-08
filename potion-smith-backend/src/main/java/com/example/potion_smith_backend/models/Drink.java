@@ -19,12 +19,18 @@ public class Drink {
 
 //    Add validation so that the value cannot be blank or null
 
-@NotBlank(message = "Drink name is required")
-@Size(min=2, max=80, message = "Drink name must be 2-80 characters long")
+    @NotBlank(message = "Drink name is required")
+    @Size(min=2, max=80, message = "Drink name must be 2-80 characters long")
     private String drinkName;
 
+    @Lob
+    @Column(nullable = false)
     private String drinkInstructions;
+
+    @Lob
+    @Column(nullable = false)
     private String drinkIngredients;
+
     private int imageId;
     private boolean onWeeklyFeature;
 
