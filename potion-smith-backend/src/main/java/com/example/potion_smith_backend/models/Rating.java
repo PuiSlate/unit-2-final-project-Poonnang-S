@@ -21,12 +21,12 @@ public class Rating {
 //    can have many ratings. Therefore, we have a ManyToOne relationship between Rating and User,
 //    and Rating and Drink.
     @ManyToOne
-    @JoinColumn(name = "user_id")
+    @JoinColumn(name = "user_id", nullable = false)
     @JsonManagedReference
     private User user;
 
     @ManyToOne
-    @JoinColumn(name = "drink_id")
+    @JoinColumn(name = "drink_id", nullable = false)
     @JsonManagedReference
     private Drink drink;
 

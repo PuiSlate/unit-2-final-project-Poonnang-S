@@ -1,6 +1,7 @@
 package com.example.potion_smith_backend.models;
 
 
+import com.fasterxml.jackson.annotation.JsonManagedReference;
 import jakarta.persistence.*;
 import org.hibernate.annotations.CreationTimestamp;
 
@@ -24,10 +25,12 @@ public class Comment {
 //    and Comment and Drink.
     @ManyToOne
     @JoinColumn(name = "user_id", nullable = false)
+    @JsonManagedReference
     private User user;
 
     @ManyToOne
     @JoinColumn(name = "drink_id", nullable = false)
+    @JsonManagedReference
     private Drink drink;
 
     public Comment() {
