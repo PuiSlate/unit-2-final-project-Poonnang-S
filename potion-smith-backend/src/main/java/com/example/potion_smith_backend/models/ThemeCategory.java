@@ -1,9 +1,10 @@
 package com.example.potion_smith_backend.models;
 
-import jakarta.persistence.Entity;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.GenerationType;
-import jakarta.persistence.Id;
+import com.fasterxml.jackson.annotation.JsonManagedReference;
+import jakarta.persistence.*;
+
+import java.util.ArrayList;
+import java.util.List;
 
 @Entity
 public class ThemeCategory {
@@ -13,6 +14,11 @@ public class ThemeCategory {
     private int id;
 
     private String title;
+
+//    One ThemeCategory can have many drinks
+    @OneToMany (mappedBy = "themeCategory", cascade = CascadeType.ALL)
+    @JsonManagedReference
+    private List<Drink> drinks = new ArrayList<>();
 
     public ThemeCategory() {};
 

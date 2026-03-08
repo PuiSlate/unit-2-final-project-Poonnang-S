@@ -1,4 +1,5 @@
 package com.example.potion_smith_backend.models;
+import com.fasterxml.jackson.annotation.JsonBackReference;
 import com.fasterxml.jackson.annotation.JsonManagedReference;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotBlank;
@@ -42,6 +43,17 @@ public class Drink {
     @JsonManagedReference
     private List<Favorite> favorites = new ArrayList<>();
 
+//    Many drinks can belong to one theme category
+    @ManyToOne
+    @JoinColumn(name = "theme_category_id")
+    @JsonBackReference
+    private ThemeCategory themeCategory;
+
+//    Many drinks can belong to one spirit category
+    @ManyToOne
+    @JoinColumn(name = "spirit_category_id")
+    @JsonBackReference
+    private SpiritCategory spiritCategory;
 
     public Drink() {};
 
