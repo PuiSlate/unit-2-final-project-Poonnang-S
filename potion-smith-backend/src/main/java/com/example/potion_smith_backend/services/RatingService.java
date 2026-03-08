@@ -26,7 +26,7 @@ public class RatingService {
 
     Drink drink = drinkRepository.findById(drinkId)
                 .orElseThrow(() -> new RuntimeException("Drink not found with id: " + drinkId));
-        rating.setStars(drink);
+        rating.setDrink(drink);
         return ratingRepository.save(rating);
     }
 }

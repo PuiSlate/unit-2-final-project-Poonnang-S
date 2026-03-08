@@ -13,7 +13,7 @@ public class RatingController {
 
     private final RatingService ratingService;
 
-    @Autowired
+
     public RatingController(RatingService ratingService) {
         this.ratingService = ratingService;
     }

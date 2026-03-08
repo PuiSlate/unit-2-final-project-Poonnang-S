@@ -1,10 +1,11 @@
 package com.example.potion_smith_backend.models;
-import jakarta.persistence.Entity;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.GenerationType;
-import jakarta.persistence.Id;
+import com.fasterxml.jackson.annotation.JsonManagedReference;
+import jakarta.persistence.*;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.Size;
+
+import java.util.ArrayList;
+import java.util.List;
 
 
 //Create a table for the Drink model
@@ -25,6 +26,22 @@ public class Drink {
     private String drinkIngredients;
     private int imageId;
     private boolean onWeeklyFeature;
+
+    // One drink can have many comments
+    @OneToMany(mappedBy = "drink", cascade = CascadeType.ALL)
+    @JsonManagedReference
+    private List<Comment> comments = new ArrayList<>();
+
+    // One drink can have many ratings
+    @OneToMany(mappedBy = "drink", cascade = CascadeType.ALL)
+    @JsonManagedReference
+    private List<Rating> ratings = new ArrayList<>();
+
+    // One drink can have many favorites
+    @OneToMany(mappedBy = "drink", cascade = CascadeType.ALL)
+    @JsonManagedReference
+    private List<Favorite> favorites = new ArrayList<>();
+
 
     public Drink() {};
 
