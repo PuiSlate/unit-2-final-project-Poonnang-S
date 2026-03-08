@@ -3,7 +3,8 @@ import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
-
+import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.Size;
 
 
 //Create a table for the Drink model
@@ -14,7 +15,12 @@ public class Drink {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private int id;
 
+//    Add validation so that the value cannot be blank or null
+
+@NotBlank(message = "Drink name is required")
+@Size(min=2, max=80, message = "Drink name must be 2-80 characters long")
     private String drinkName;
+
     private String drinkInstructions;
     private String drinkIngredients;
     private int imageId;

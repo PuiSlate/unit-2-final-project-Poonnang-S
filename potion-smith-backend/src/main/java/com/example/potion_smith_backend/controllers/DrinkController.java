@@ -2,6 +2,7 @@ package com.example.potion_smith_backend.controllers;
 
 import com.example.potion_smith_backend.models.Drink;
 import com.example.potion_smith_backend.repositories.DrinkRepository;
+import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
@@ -41,7 +42,7 @@ public class DrinkController {
 //    POST http://localhost:8080/api/drinks/add
 //Ensure the mapping is configured to consume JSON instead of using query params
     @PostMapping(value= "/add", consumes= MediaType.APPLICATION_JSON_VALUE)
-    public ResponseEntity<?> addNewDrink(@RequestBody Drink drink) {
+    public ResponseEntity<?> addNewDrink(@Valid @RequestBody Drink drink) {
         drinkRepository.save(drink);
         return new ResponseEntity<>(drink, HttpStatus.CREATED); //201
 
