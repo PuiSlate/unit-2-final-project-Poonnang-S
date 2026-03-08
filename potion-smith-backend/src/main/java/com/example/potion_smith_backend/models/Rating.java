@@ -1,6 +1,8 @@
 package com.example.potion_smith_backend.models;
 
 import jakarta.persistence.*;
+import jakarta.validation.constraints.Max;
+import jakarta.validation.constraints.Min;
 
 @Entity
 public class Rating {
@@ -9,6 +11,8 @@ public class Rating {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private int id;
 
+    @Min(1)
+    @Max(5)
     private int stars;
 
 
@@ -29,11 +33,31 @@ public class Rating {
         this.stars = stars;
     }
 
+    public int getId() {
+        return id;
+    }
+
     public int getStars() {
         return stars;
     }
 
-    public void setStars(int stars) {
+    public void setStars(Drink stars) {
         this.stars = stars;
+    }
+
+    public User getUser() {
+        return user;
+    }
+
+    public void setUser(User user) {
+        this.user = user;
+    }
+
+    public Drink getDrink() {
+        return drink;
+    }
+
+    public void setDrink(Drink drink) {
+        this.drink = drink;
     }
 }
