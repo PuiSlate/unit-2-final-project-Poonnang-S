@@ -1,5 +1,6 @@
 package com.example.potion_smith_backend.controllers;
 
+import com.example.potion_smith_backend.dtos.UserDTO;
 import com.example.potion_smith_backend.models.User;
 import com.example.potion_smith_backend.services.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -31,7 +32,8 @@ public class UserController {
     }
 
     @PostMapping(value= "/add", consumes= MediaType.APPLICATION_JSON_VALUE)
-    public User createUser(@RequestBody User user) {
+    public User createUser(@RequestBody UserDTO userData) {
+        User user = new User(userData.getUsername(), userData.getEmail(), userData.getAge());
         return userService.save(user);
     }
 
