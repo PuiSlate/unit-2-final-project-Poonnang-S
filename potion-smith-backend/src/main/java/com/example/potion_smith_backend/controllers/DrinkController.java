@@ -1,5 +1,6 @@
 package com.example.potion_smith_backend.controllers;
 
+import com.example.potion_smith_backend.dtos.DrinkDTO;
 import com.example.potion_smith_backend.models.Drink;
 import com.example.potion_smith_backend.repositories.DrinkRepository;
 import jakarta.validation.Valid;
@@ -42,12 +43,12 @@ public class DrinkController {
 //    POST http://localhost:8080/api/drinks/add
 //Ensure the mapping is configured to consume JSON instead of using query params
     @PostMapping(value= "/add", consumes= MediaType.APPLICATION_JSON_VALUE)
-    public ResponseEntity<?> addNewDrink(@Valid @RequestBody Drink drink) {
+    public ResponseEntity<?> addNewDrink(@Valid @RequestBody DrinkDTO drinkData) {
+        Drink drink = new Drink(drinkData.getDrinkName(), drinkData.getDrinkInstructions(), drinkData.getDrinkIngredients(), drinkData.getImageId(), drinkData.isOnWeeklyFeature());
         drinkRepository.save(drink);
         return new ResponseEntity<>(drink, HttpStatus.CREATED); //201
 
     }
-
 
 
     //    Delete a drink from the database
@@ -64,9 +65,3 @@ public class DrinkController {
     }
 }
 
-
-//    @PostMapping("/add")
-//    public String addNewDrink(@RequestParam String drinkName, @RequestParam String drinkInstructions, @RequestParam String drinkIngredients, @RequestParam int imageId, @RequestParam boolean onWeeklyFeature) {
-//        Drink newDrink = new Drink(drinkName, drinkInstructions, drinkIngredients, imageId, onWeeklyFeature);
-//        drinkRepository.save(newDrink);
-//        return "Drink added: " + newDrink;

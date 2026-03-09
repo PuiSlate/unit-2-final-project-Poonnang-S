@@ -2,8 +2,6 @@ package com.example.potion_smith_backend.models;
 import com.fasterxml.jackson.annotation.JsonBackReference;
 import com.fasterxml.jackson.annotation.JsonManagedReference;
 import jakarta.persistence.*;
-import jakarta.validation.constraints.NotBlank;
-import jakarta.validation.constraints.Size;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -17,10 +15,6 @@ public class Drink {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private int id;
 
-//    Add validation so that the value cannot be blank or null
-
-    @NotBlank(message = "Drink name is required")
-    @Size(min=2, max=80, message = "Drink name must be 2-80 characters long")
     private String drinkName;
 
     @Lob
@@ -70,6 +64,7 @@ public class Drink {
         this.imageId = imageId;
         this.onWeeklyFeature = onWeeklyFeature;
     }
+
 
     public int getId() {
         return id;
