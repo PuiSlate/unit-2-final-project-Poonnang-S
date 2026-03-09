@@ -2,7 +2,6 @@ package com.example.potion_smith_backend.models;
 
 
 import com.fasterxml.jackson.annotation.JsonBackReference;
-import com.fasterxml.jackson.annotation.JsonManagedReference;
 import jakarta.persistence.*;
 import org.hibernate.annotations.CreationTimestamp;
 
@@ -39,6 +38,10 @@ public class Comment {
 
     public Comment(String commentText) {
         this.commentText = commentText;
+    }
+
+    //  Request CommentDTO constructor
+    public Comment(String commentText, int userId, int drinkId) {
     }
 
     // Getters and Setters

@@ -1,6 +1,7 @@
 package com.example.potion_smith_backend.controllers;
 
 
+import com.example.potion_smith_backend.dtos.CommentDTO;
 import com.example.potion_smith_backend.models.Comment;
 import com.example.potion_smith_backend.services.CommentService;
 import org.springframework.web.bind.annotation.*;
@@ -22,7 +23,8 @@ public class CommentController {
     }
 
     @PostMapping("")
-    public Comment addComment(@PathVariable int drinkId, @RequestBody Comment comment) {
+    public Comment addComment(@PathVariable int drinkId, @RequestBody CommentDTO commentData) {
+        Comment comment = new Comment(commentData.getCommentText(), commentData.getUserId(), commentData.getDrinkId());
         return commentService.addComment(drinkId, comment);
     }
 
