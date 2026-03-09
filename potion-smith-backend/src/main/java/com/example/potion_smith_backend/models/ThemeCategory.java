@@ -13,6 +13,7 @@ public class ThemeCategory {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private int id;
 
+    @Column(unique = true)
     private String title;
 
 //    One ThemeCategory can have many drinks

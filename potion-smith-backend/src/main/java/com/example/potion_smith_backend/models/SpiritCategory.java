@@ -12,6 +12,8 @@ public class SpiritCategory {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private int id;
+
+    @Column(unique = true)
     private String title;
 
 //    One SpiritCategory can have many drinks
