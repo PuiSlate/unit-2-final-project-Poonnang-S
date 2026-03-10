@@ -10,6 +10,7 @@ import AboutPage from './components/pages/AboutPage'
 import SubscribePage from './components/pages/SubscribePage'
 import ContactPage from './components/pages/ContactPage'
 import AgeGate from './components/forms/AgeGate';
+import LogInForm from './components/forms/LogInForm';
 
 
 
@@ -39,7 +40,7 @@ function App() {
       <Routes>
         <Route path="/" element={<HomePage />} />
         <Route path="/about" element={<AboutPage />} />
-        <Route path="/recipes" element={<RecipesPage recipes={recipes} searchQuery={searchQuery} />} />
+        <Route path="/recipes" element={<RecipesPage searchQuery={searchQuery} />} />
         <Route path="/recipes/:id" element={<RecipeDetailsPage recipes={recipes} setRecipes={setRecipes} />} />
         <Route path="/contact" element={<ContactPage />} />
         <Route path="/subscribe" element={<SubscribePage />} />
