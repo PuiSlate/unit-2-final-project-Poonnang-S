@@ -1,0 +1,6 @@
+@import url('./components/layout/layout.css');
+@import url('./components/forms/form.css');
+@import url('./components/pages/pages.css');
+@import url('./components/pages/Recipes/recipe.css');
+@import url('./components/common/common.css');
+@import url('./App.css')
