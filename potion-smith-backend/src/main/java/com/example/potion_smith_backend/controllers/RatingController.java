@@ -1,8 +1,8 @@
 package com.example.potion_smith_backend.controllers;
 
+import com.example.potion_smith_backend.dtos.RatingDTO;
 import com.example.potion_smith_backend.models.Rating;
 import com.example.potion_smith_backend.services.RatingService;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -24,7 +24,8 @@ public class RatingController {
     }
 
     @PostMapping("")
-    public Rating addRating(@PathVariable int drinkId, @RequestBody Rating rating) {
+    public Rating addRating(@PathVariable int drinkId, @RequestBody RatingDTO ratingData) {
+        Rating rating = new Rating(ratingData.getStars());
         return ratingService.addRating(drinkId, rating);
     }
 }
