@@ -2,18 +2,18 @@ import RecipeCard from "./RecipeCard";
 import { useMemo, useState, useEffect } from "react";
 import { useNavigate, useLocation } from "react-router-dom";
 
-const RecipesPage = ({ searchQuery }) => {
+const RecipesPage = () => {
   const navigate = useNavigate();
   const location = useLocation();
 
   const [recipes, setRecipes] = useState([]);
 
   useEffect(() => {
-    fetch("http://localhost:8080/api/drinks")
-      .then((response) => response.json())
-      .then((data) => setRecipes(data))
-      .catch((error) => console.error("Error fetching drinks:", error));
-  }, []);
+  fetch("http://localhost:8080/api/drinks")
+    .then((response) => response.json())
+    .then((data) => setRecipes(data))
+    .catch((error) => console.error("Error fetching drinks:", error));
+}, []);
 
   // Read search query from URL
   const queryParams = new URLSearchParams(location.search);
