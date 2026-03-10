@@ -17,6 +17,7 @@ function App() {
   const [searchQuery, setSearchQuery] = useState("");
   const [recipes, setRecipes] = useState(mockRecipes);
   const [ageVerified, setAgeVerified] = useState(false);
+  const [isLoggedIn, setIsLoggedIn] = useState(false);
 
   // AgeGate modal to appear before users access the homepage
   const handleAgeVerified = (verified) => {
@@ -37,6 +38,7 @@ function App() {
         <Route path="/recipes/:id" element={<RecipeDetailsPage recipes={recipes} setRecipes={setRecipes} />} />
         <Route path="/contact" element={<ContactPage />} />
         <Route path="/subscribe" element={<SubscribePage />} />
+        <Route path="/login" element={<LogInForm setIsLoggedIn={setIsLoggedIn} />} />
         <Route path="*" element={<Navigate to="/" />} />
       </Routes>
       <Footer />
