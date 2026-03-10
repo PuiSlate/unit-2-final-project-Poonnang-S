@@ -28,7 +28,9 @@ public class CommentController {
         return commentService.addComment(drinkId, comment);
     }
 
+    @DeleteMapping("/{commentId}")
+    public void deleteComment(@PathVariable int drinkId, @PathVariable int commentId) {
+        commentService.deleteComment(drinkId, commentId);
 
-
-
+    }
 }

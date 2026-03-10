@@ -28,4 +28,13 @@ public class CommentService {
         comment.setDrink(drink);
         return commentRepository.save(comment);
     }
+
+    public void deleteComment(int drinkId, int commentId) {
+        Comment comment = commentRepository.findById(commentId)
+                .orElseThrow(() -> new RuntimeException("Comment not found with id: " + commentId));
+        if (comment.getDrink().getId() != drinkId) {
+            throw new RuntimeException("Comment with id: " + commentId + " does not belong to drink with id: " + drinkId);
+        }
+        commentRepository.delete(comment);
+    }
 }
