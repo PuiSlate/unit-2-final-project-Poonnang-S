@@ -30,7 +30,12 @@ function App() {
   // Once verified, render the normal app
   return (
     <>
-      <Header searchQuery={searchQuery} setSearchQuery={setSearchQuery} />
+      <Header 
+      searchQuery={searchQuery} 
+      setSearchQuery={setSearchQuery}
+      isLoggedIn={isLoggedIn}
+      setIsLoggedIn={setIsLoggedIn}
+      />
       <Routes>
         <Route path="/" element={<HomePage />} />
         <Route path="/about" element={<AboutPage />} />

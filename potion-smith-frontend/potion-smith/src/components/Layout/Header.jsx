@@ -2,18 +2,17 @@ import NavBar from "./NavBar";
 import { useState } from "react";
 
 
-const Header = () => {
-  const [searchQuery, setSearchQuery] = useState("");
-    return (
-        <header>
-            
-            <NavBar
-            searchQuery={searchQuery}
-            setSearchQuery={setSearchQuery}
-             />
-            
-        </header>
-    )
-}
+const Header = ({ searchQuery, setSearchQuery, isLoggedIn, setIsLoggedIn }) => {
+  return (
+    <header>
+      <NavBar
+        searchQuery={searchQuery}
+        setSearchQuery={setSearchQuery}
+        isLoggedIn={isLoggedIn}
+        setIsLoggedIn={setIsLoggedIn}
+      />
+    </header>
+  );
+};
 
 export default Header;
