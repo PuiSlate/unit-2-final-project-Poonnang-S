@@ -1,9 +1,10 @@
 package com.example.potion_smith_backend.models;
-import jakarta.persistence.Entity;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.GenerationType;
-import jakarta.persistence.Id;
+import com.fasterxml.jackson.annotation.JsonBackReference;
+import com.fasterxml.jackson.annotation.JsonManagedReference;
+import jakarta.persistence.*;
 
+import java.util.ArrayList;
+import java.util.List;
 
 
 //Create a table for the Drink model
@@ -12,13 +13,47 @@ public class Drink {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private int Id;
+    private int id;
 
     private String drinkName;
+
+    @Lob
+    @Column(nullable = false)
     private String drinkInstructions;
+
+    @Lob
+    @Column(nullable = false)
     private String drinkIngredients;
+
     private int imageId;
     private boolean onWeeklyFeature;
+
+    // One drink can have many comments
+    @OneToMany(mappedBy = "drink", cascade = CascadeType.ALL)
+    @JsonManagedReference
+    private List<Comment> comments = new ArrayList<>();
+
+    // One drink can have many ratings
+    @OneToMany(mappedBy = "drink", cascade = CascadeType.ALL)
+    @JsonManagedReference
+    private List<Rating> ratings = new ArrayList<>();
+
+    // One drink can have many favorites
+    @OneToMany(mappedBy = "drink", cascade = CascadeType.ALL)
+    @JsonManagedReference
+    private List<Favorite> favorites = new ArrayList<>();
+
+//    Many drinks can belong to one theme category
+    @ManyToOne
+    @JoinColumn(name = "theme_category_title", referencedColumnName = "title")
+    @JsonBackReference
+    private ThemeCategory themeCategory;
+
+//    Many drinks can belong to one spirit category
+    @ManyToOne
+    @JoinColumn(name = "spirit_category_title", referencedColumnName = "title")
+    @JsonBackReference
+    private SpiritCategory spiritCategory;
 
     public Drink() {};
 
@@ -30,8 +65,9 @@ public class Drink {
         this.onWeeklyFeature = onWeeklyFeature;
     }
 
+
     public int getId() {
-        return Id;
+        return id;
     }
 
     public String getDrinkName() {
@@ -86,7 +122,7 @@ public class Drink {
 
         Drink drink = (Drink) o;
 
-        if (Id != drink.Id) return false;
+        if (id != drink.id) return false;
         if (imageId != drink.imageId) return false;
         if (onWeeklyFeature != drink.onWeeklyFeature) return false;
         if (!drinkName.equals(drink.drinkName)) return false;
@@ -96,7 +132,7 @@ public class Drink {
 
     @Override
     public int hashCode() {
-        int result = Id;
+        int result = id;
         result = 31 * result + drinkName.hashCode();
         result = 31 * result + drinkInstructions.hashCode();
         result = 31 * result + drinkIngredients.hashCode();
