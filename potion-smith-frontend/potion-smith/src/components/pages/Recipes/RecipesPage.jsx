@@ -11,16 +11,7 @@ const RecipesPage = () => {
   useEffect(() => {
   fetch("http://localhost:8080/api/drinks")
     .then((response) => response.json())
-    .then((data) => {
-      const mappedRecipes = data.map((drink) => ({
-        id: drink.id,
-        drinkName: drink.drinkName,
-        category: drink.category,
-        ingredients: drink.ingredients,
-        instructions: drink.instructions
-      }));
-      setRecipes(mappedRecipes);
-    })
+    .then((data) => setRecipes(data))
     .catch((error) => console.error("Error fetching recipes:", error));
 }, []);
 

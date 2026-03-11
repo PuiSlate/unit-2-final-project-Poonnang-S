@@ -10,13 +10,12 @@ const RecipeCard = ({ recipe, onClick }) => {
         <Card clickable={true} onClick={onClick}>
             <img
                 className="recipe-card-image"
-                src={recipe.imageID ? recipeImages[recipe.imageID] : recipeImages["fallback.jpg"]}
-                alt={`Image of ${recipe.name}`}
+                src={recipe.imageId ? recipeImages[recipe.imageI] : recipeImages["fallback.jpg"]}
+                alt={`Image of ${recipe.drinkName}`}
             />
 
             <div className="recipe-card-text">
-                <h4>{recipe.name}</h4>
-                <h5>{recipe.category}</h5>
+                <h4>{recipe.drinkName}</h4>
             </div>
 
             <Spacer marginY="10px" />
