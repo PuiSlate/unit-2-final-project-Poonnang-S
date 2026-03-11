@@ -51,9 +51,8 @@ const NavBar = ({ isLoggedIn, setIsLoggedIn }) => {
         <li>
           <Link to="/subscribe">Subscribe</Link>
         </li>
-      </ul>
 
-      {/* LOGIN/LOGOUT */}
+        {/* LOGIN/LOGOUT */}
       <li>
         {isLoggedIn ? (
           <button onClick={() => setIsLoggedIn(false)}>Log Out</button>
@@ -61,6 +60,10 @@ const NavBar = ({ isLoggedIn, setIsLoggedIn }) => {
           <Link to="/login">Log In</Link>
         )}
       </li>
+      
+      </ul>
+
+      
 
       <form className="navbar-search" onSubmit={handleSearch}>
         <input
