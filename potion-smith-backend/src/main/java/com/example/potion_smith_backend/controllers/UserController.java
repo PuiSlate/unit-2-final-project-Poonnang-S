@@ -41,14 +41,16 @@ public class UserController {
 //    It retrieves all users from the database and checks if the provided email and password match
 //    any existing user. If a match is found, it returns the corresponding user object; otherwise,
 //    it throws a RuntimeException indicating invalid credentials.
-    @PostMapping("/login")
-    public User login(@RequestBody UserDTO loginData) {
+    @PostMapping(value="/login", consumes = MediaType.APPLICATION_JSON_VALUE)
+    public User login(@RequestBody UserDTO userData) {
 
         List<User> users = userService.findAll();
 
         for (User user : users) {
-            if (user.getEmail().equals(loginData.getEmail()) &&
-                    user.getPassword().equals(loginData.getPassword())) {
+            if (user.getEmail() != null &&
+                    user.getEmail().equals(userData.getEmail()) &&
+                    user.getPassword().equals(userData.getPassword())) {
+
                 return user;
             }
         }
