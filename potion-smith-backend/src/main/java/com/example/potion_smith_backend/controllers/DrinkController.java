@@ -12,6 +12,7 @@ import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
+@CrossOrigin(origins = "http://localhost:5173/") // Allow CORS requests from the React frontend running on port 5173
 @RestController
 @RequestMapping("/api/drinks")
 public class DrinkController {

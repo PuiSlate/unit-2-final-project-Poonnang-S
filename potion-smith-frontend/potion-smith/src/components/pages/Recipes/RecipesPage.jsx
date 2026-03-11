@@ -11,9 +11,19 @@ const RecipesPage = () => {
   useEffect(() => {
   fetch("http://localhost:8080/api/drinks")
     .then((response) => response.json())
-    .then((data) => setRecipes(data))
-    .catch((error) => console.error("Error fetching drinks:", error));
+    .then((data) => {
+      const mappedRecipes = data.map((drink) => ({
+        id: drink.id,
+        drinkName: drink.drinkName,
+        category: drink.category,
+        ingredients: drink.ingredients,
+        instructions: drink.instructions
+      }));
+      setRecipes(mappedRecipes);
+    })
+    .catch((error) => console.error("Error fetching recipes:", error));
 }, []);
+
 
   // Read search query from URL
   const queryParams = new URLSearchParams(location.search);
@@ -25,11 +35,13 @@ const RecipesPage = () => {
     return recipes.filter((recipe) => {
       const matchesSearch =
         searchQuery === "" ||
-        recipe.drinkName.toLowerCase().includes(searchQuery) ||
+        recipe.name.toLowerCase().includes(searchQuery) ||
         recipe.category.toLowerCase().includes(searchQuery);
 
       const matchesCategory =
-        selectedCategory === "" || recipe.category === selectedCategory;
+        selectedCategory === "" || 
+        recipe.name.toLowerCase().includes(searchQuery) ||
+        recipe.category.toLowerCase().includes(searchQuery);
 
      //Test casess for filtering logic
       // CASE 1: neither filter selected, show all

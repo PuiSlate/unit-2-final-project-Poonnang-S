@@ -10,10 +10,10 @@ public class DrinkDTO {
 
     private String drinkInstructions;
     private String drinkIngredients;
-    private int imageId;
+    private String imageId;
     private boolean onWeeklyFeature;
 
-    public DrinkDTO(String drinkName, String drinkInstructions, String drinkIngredients, int imageId, boolean onWeeklyFeature) {
+    public DrinkDTO(String drinkName, String drinkInstructions, String drinkIngredients, String imageId, boolean onWeeklyFeature) {
         this.drinkName = drinkName;
         this.drinkInstructions = drinkInstructions;
         this.drinkIngredients = drinkIngredients;
@@ -46,11 +46,11 @@ public class DrinkDTO {
         this.drinkIngredients = drinkIngredients;
     }
 
-    public int getImageId() {
+    public String getImageId() {
         return imageId;
     }
 
-    public void setImageId(int imageId) {
+    public void setImageId(String imageId) {
         this.imageId = imageId;
     }
 
