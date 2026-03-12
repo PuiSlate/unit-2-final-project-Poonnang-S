@@ -1,22 +1,40 @@
 import { useState } from "react";
 
-function LogInForm ({setIsLoggedIn}) {
+function LogInForm({ setIsLoggedIn }) {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
 
-  function handleSubmit(e){
+  function handleSubmit(e) {
     e.preventDefault();
-    // Handle login logic here
 
-    // Fake login (no backend yet) - just check if email and password are not empty
-    if (email && password) {
+    // Handle login logic here
+    fetch("http://localhost:8080/api/users/login", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({
+        email: email,
+        password: password,
+      }),
+    })
+      .then((res) => {
+        if (!res.ok) throw new Error("Invalid credentials");
+        return res.json();
+      })
+      .then((data) => {
         setIsLoggedIn(true);
-    }
-  };
+        setCurrentUser(data); // save user info
+        navigate("/"); // redirect after login
+      })
+      .catch((err) => {
+        alert(err.message);
+      });
+  }
 
   return (
     <form onSubmit={handleSubmit}>
-    <h2>Log In</h2>
+      <h2>Log In</h2>
       <input
         type="email"
         value={email}
@@ -34,6 +52,6 @@ function LogInForm ({setIsLoggedIn}) {
       <button type="submit">Log In</button>
     </form>
   );
-};
+}
 
 export default LogInForm;

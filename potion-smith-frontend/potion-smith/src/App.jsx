@@ -11,6 +11,7 @@ import SubscribePage from './components/pages/SubscribePage'
 import ContactPage from './components/pages/ContactPage'
 import AgeGate from './components/forms/AgeGate';
 import LogInForm from './components/forms/LogInForm';
+import UserDashboard from './components/Layout/UserDashboard';
 
 
 
@@ -19,6 +20,7 @@ function App() {
   const [recipes, setRecipes] = useState(mockRecipes);
   const [ageVerified, setAgeVerified] = useState(false);
   const [isLoggedIn, setIsLoggedIn] = useState(false);
+  const [currentUser, setCurrentUser] = useState(null);
 
   // AgeGate modal to appear before users access the homepage
   const handleAgeVerified = (verified) => {
@@ -46,6 +48,7 @@ function App() {
         <Route path="/subscribe" element={<SubscribePage />} />
         <Route path="/login" element={<LogInForm setIsLoggedIn={setIsLoggedIn} />} />
         <Route path="*" element={<Navigate to="/" />} />
+        <Route path="/dashboard" element={<UserDashboard user={currentUser} />} />
       </Routes>
       <Footer />
     </>

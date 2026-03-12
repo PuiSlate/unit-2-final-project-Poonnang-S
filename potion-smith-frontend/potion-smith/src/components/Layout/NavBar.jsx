@@ -53,17 +53,24 @@ const NavBar = ({ isLoggedIn, setIsLoggedIn }) => {
         </li>
 
         {/* LOGIN/LOGOUT */}
-      <li>
-        {isLoggedIn ? (
-          <button onClick={() => setIsLoggedIn(false)}>Log Out</button>
-        ) : (
-          <Link to="/login">Log In</Link>
-        )}
-      </li>
-      
+        <li>
+          {isLoggedIn ? (
+            <>
+              <span>Welcome, {currentUser?.username}</span>
+              <button
+                onClick={() => {
+                  setIsLoggedIn(false);
+                  setCurrentUser(null);
+                }}
+              >
+                Log Out
+              </button>
+            </>
+          ) : (
+            <Link to="/login">Log In</Link>
+          )}
+        </li>
       </ul>
-
-      
 
       <form className="navbar-search" onSubmit={handleSearch}>
         <input
