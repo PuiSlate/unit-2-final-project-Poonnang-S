@@ -20,7 +20,7 @@ function App() {
   const [recipes, setRecipes] = useState(mockRecipes);
   const [ageVerified, setAgeVerified] = useState(false);
   const [isLoggedIn, setIsLoggedIn] = useState(false);
-  const [currentUser, setCurrentUser] = useState(null);
+  const [currentUser, setCurrentUser] = useState(null); //store the user object returned from your backend login
 
   // AgeGate modal to appear before users access the homepage
   const handleAgeVerified = (verified) => {
@@ -38,6 +38,7 @@ function App() {
       setSearchQuery={setSearchQuery}
       isLoggedIn={isLoggedIn}
       setIsLoggedIn={setIsLoggedIn}
+      currentUser={currentUser}
       />
       <Routes>
         <Route path="/" element={<HomePage />} />
@@ -46,7 +47,7 @@ function App() {
         <Route path="/recipes/:id" element={<RecipeDetailsPage recipes={recipes} setRecipes={setRecipes} />} />
         <Route path="/contact" element={<ContactPage />} />
         <Route path="/subscribe" element={<SubscribePage />} />
-        <Route path="/login" element={<LogInForm setIsLoggedIn={setIsLoggedIn} />} />
+        <Route path="/login" element={<LogInForm setIsLoggedIn={setIsLoggedIn} setCurrentUser={setCurrentUser} />} />
         <Route path="*" element={<Navigate to="/" />} />
         <Route path="/dashboard" element={<UserDashboard user={currentUser} />} />
       </Routes>

@@ -3,6 +3,7 @@ import { useState } from "react";
 function LogInForm({ setIsLoggedIn }) {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
+  const navigate = useNavigate();
 
   function handleSubmit(e) {
     e.preventDefault();
@@ -25,7 +26,7 @@ function LogInForm({ setIsLoggedIn }) {
       .then((data) => {
         setIsLoggedIn(true);
         setCurrentUser(data); // save user info
-        navigate("/"); // redirect after login
+        navigate("/dashboard"); // redirect to dashboard after login
       })
       .catch((err) => {
         alert(err.message);

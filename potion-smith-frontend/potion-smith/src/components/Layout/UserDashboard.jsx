@@ -8,7 +8,6 @@ const Dashboard = ({ user }) => {
   return (
     <main className="dashboard-page">
       <h1>Welcome, {user.username}!</h1>
-      <p>Here’s your account information:</p>
       <ul>
         <li><strong>User ID:</strong> {user.id}</li>
         <li><strong>Email:</strong> {user.email}</li>
