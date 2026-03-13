@@ -54,7 +54,7 @@ public class DrinkController {
 
     //    Delete a drink from the database
 //    DELETE http://localhost:8080/api/drinks/3 (for example)
-    @DeleteMapping("/{drinkId}")
+    @DeleteMapping("/drinks/{id}")
     public ResponseEntity<Void> deleteDrink(@PathVariable int drinkId) {
         return drinkRepository.findById(drinkId)
                 .map(drink -> {
@@ -64,5 +64,20 @@ public class DrinkController {
                 .orElseGet(() -> new ResponseEntity<>(HttpStatus.NOT_FOUND));
 
     }
+
+//    Put endpoint to update an existing drink in the database
+//    PUT http://localhost:8080/api/drinks/update/3 (for example)
+@PutMapping("/drinks/{id}")
+public ResponseEntity<Drink> updateDrink(@PathVariable int id, @RequestBody Drink updatedDrink) {
+    return drinkRepository.findById(id).map(drink -> {
+        drink.setDrinkName(updatedDrink.getDrinkName());
+        drink.setDrinkIngredients(updatedDrink.getDrinkIngredients());
+        drink.setDrinkInstructions(updatedDrink.getDrinkInstructions());
+        drink.setImageId(updatedDrink.getImageId());
+        drink.setOnWeeklyFeature(updatedDrink.isOnWeeklyFeature());
+        drinkRepository.save(drink);
+        return ResponseEntity.ok(drink);
+    }).orElse(ResponseEntity.notFound().build());
+}
 }
 
