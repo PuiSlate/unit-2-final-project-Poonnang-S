@@ -10,7 +10,7 @@ const RecipeCard = ({ recipe, onClick }) => {
         <Card clickable={true} onClick={onClick}>
             <img
                 className="recipe-card-image"
-                src={recipe.imageId ? recipeImages[recipe.imageI] : recipeImages["fallback.jpg"]}
+                src={recipe.imageId ? recipeImages[recipe.imageId] : recipeImages["fallback.jpg"]}
                 alt={`Image of ${recipe.drinkName}`}
             />
 

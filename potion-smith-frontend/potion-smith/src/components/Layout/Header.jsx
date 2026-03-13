@@ -2,7 +2,7 @@ import NavBar from "./NavBar";
 import { useState } from "react";
 
 
-const Header = ({ searchQuery, setSearchQuery, isLoggedIn, setIsLoggedIn }) => {
+const Header = ({ searchQuery, setSearchQuery, isLoggedIn, setIsLoggedIn, currentUser, setCurrentUser }) => {
   return (
     <header>
       <NavBar
@@ -10,6 +10,8 @@ const Header = ({ searchQuery, setSearchQuery, isLoggedIn, setIsLoggedIn }) => {
         setSearchQuery={setSearchQuery}
         isLoggedIn={isLoggedIn}
         setIsLoggedIn={setIsLoggedIn}
+        currentUser={currentUser}
+        setCurrentUser={setCurrentUser}
       />
     </header>
   );

@@ -1,6 +1,6 @@
 import { Link, useNavigate, useLocation } from "react-router-dom";
 
-const NavBar = ({ isLoggedIn, setIsLoggedIn }) => {
+const NavBar = ({ isLoggedIn, setIsLoggedIn, currentUser, setCurrentUser }) => {
   const navigate = useNavigate();
   const location = useLocation();
 
@@ -61,6 +61,7 @@ const NavBar = ({ isLoggedIn, setIsLoggedIn }) => {
                 onClick={() => {
                   setIsLoggedIn(false);
                   setCurrentUser(null);
+                  navigate("/");
                 }}
               >
                 Log Out

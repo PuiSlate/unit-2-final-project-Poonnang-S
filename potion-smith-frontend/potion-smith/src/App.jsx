@@ -1,19 +1,17 @@
-import { useState } from 'react'
-import { Routes, Route, Navigate } from 'react-router';
-import Header from './components/Layout/Header'
-import Footer from './components/Layout/Footer'
-import RecipesPage from './components/pages/Recipes/RecipesPage'
+import { useState } from "react";
+import { Routes, Route, Navigate } from "react-router";
+import Header from "./components/Layout/Header";
+import Footer from "./components/Layout/Footer";
+import RecipesPage from "./components/pages/Recipes/RecipesPage";
 import { mockRecipes } from "./test-data/mockRecipe";
-import RecipeDetailsPage from './components/pages/Recipes/RecipeDetailsPage';
-import HomePage from './components/pages/HomePage'
-import AboutPage from './components/pages/AboutPage'
-import SubscribePage from './components/pages/SubscribePage'
-import ContactPage from './components/pages/ContactPage'
-import AgeGate from './components/forms/AgeGate';
-import LogInForm from './components/forms/LogInForm';
-import UserDashboard from './components/Layout/UserDashboard';
-
-
+import RecipeDetailsPage from "./components/pages/Recipes/RecipeDetailsPage";
+import HomePage from "./components/pages/HomePage";
+import AboutPage from "./components/pages/AboutPage";
+import SubscribePage from "./components/pages/SubscribePage";
+import ContactPage from "./components/pages/ContactPage";
+import AgeGate from "./components/forms/AgeGate";
+import LogInForm from "./components/forms/LogInForm";
+import UserDashboard from "./components/Layout/UserDashboard";
 
 function App() {
   const [searchQuery, setSearchQuery] = useState("");
@@ -33,23 +31,49 @@ function App() {
   // Once verified, render the normal app
   return (
     <>
-      <Header 
-      searchQuery={searchQuery} 
-      setSearchQuery={setSearchQuery}
-      isLoggedIn={isLoggedIn}
-      setIsLoggedIn={setIsLoggedIn}
-      currentUser={currentUser}
+      <Header
+        searchQuery={searchQuery}
+        setSearchQuery={setSearchQuery}
+        isLoggedIn={isLoggedIn}
+        setIsLoggedIn={setIsLoggedIn}
+        currentUser={currentUser}
+        setCurrentUser={setCurrentUser}
       />
       <Routes>
         <Route path="/" element={<HomePage />} />
         <Route path="/about" element={<AboutPage />} />
         <Route path="/recipes" element={<RecipesPage />} />
-        <Route path="/recipes/:id" element={<RecipeDetailsPage recipes={recipes} setRecipes={setRecipes} />} />
+        <Route
+          path="/recipes/:id"
+          element={
+            <RecipeDetailsPage recipes={recipes} setRecipes={setRecipes} />
+          }
+        />
         <Route path="/contact" element={<ContactPage />} />
         <Route path="/subscribe" element={<SubscribePage />} />
-        <Route path="/login" element={<LogInForm setIsLoggedIn={setIsLoggedIn} setCurrentUser={setCurrentUser} />} />
+        <Route
+          path="/login"
+          element={
+            <LogInForm
+              setIsLoggedIn={setIsLoggedIn}
+              setCurrentUser={setCurrentUser}
+            />
+          }
+        />
         <Route path="*" element={<Navigate to="/" />} />
-        <Route path="/dashboard" element={<UserDashboard currentUser={currentUser} />} />
+        <Route
+          path="/dashboard"
+          element={<UserDashboard currentUser={currentUser} />}
+        />
+        {/* <Route
+          path="/favorites"
+          element={<FavoritesPage currentUser={currentUser} />}
+        /> */}
+
+        {/* <Route
+          path="/reviews"
+          element={<UserReviewsPage currentUser={currentUser} />}
+        /> */}
       </Routes>
       <Footer />
     </>
