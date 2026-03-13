@@ -49,7 +49,7 @@ function App() {
         <Route path="/subscribe" element={<SubscribePage />} />
         <Route path="/login" element={<LogInForm setIsLoggedIn={setIsLoggedIn} setCurrentUser={setCurrentUser} />} />
         <Route path="*" element={<Navigate to="/" />} />
-        <Route path="/dashboard" element={<UserDashboard user={currentUser} />} />
+        <Route path="/dashboard" element={<UserDashboard currentUser={currentUser} />} />
       </Routes>
       <Footer />
     </>

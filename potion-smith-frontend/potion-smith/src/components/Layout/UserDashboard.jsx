@@ -1,21 +1,33 @@
 import React from "react";
+import { Link } from "react-router-dom";
 
-const Dashboard = ({ user }) => {
-  if (!user) {
-    return <p>Please log in to see your dashboard.</p>;
+const UserDashboard = ({ currentUser }) => {
+  if (!currentUser) {
+    return <p>Please log in to view your dashboard</p>; 
   }
 
   return (
-    <main className="dashboard-page">
-      <h1>Welcome, {user.username}!</h1>
-      <ul>
-        <li><strong>User ID:</strong> {user.id}</li>
-        <li><strong>Email:</strong> {user.email}</li>
-        <li><strong>Age:</strong> {user.age}</li>
-      </ul>
-      <p>You can add favorite drinks, see your ratings, or explore new recipes from here!</p>
+   <main>
+      <h1>Welcome, {currentUser.username}!</h1>
+      <p>What would you like to explore today?</p>
+
+      <div className="dashboard-links">
+
+        <Link to="/recipes" className="dashboard-card">
+          🍹 Browse All Recipes
+        </Link>
+
+        <Link to="/favorites" className="dashboard-card">
+          ⭐ My Favorite Recipes
+        </Link>
+
+        <Link to="/reviews" className="dashboard-card">
+          📝 My Reviews & Ratings
+        </Link>
+
+      </div>
     </main>
   );
 };
 
-export default Dashboard;
+export default UserDashboard;
