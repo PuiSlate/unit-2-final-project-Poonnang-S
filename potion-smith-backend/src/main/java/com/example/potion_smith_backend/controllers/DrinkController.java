@@ -24,9 +24,14 @@ public class DrinkController {
     // refactored to return a ResponseEntity object with an HttpStatus of 200 OK
 //    GET http://localhost:8080/api/drinks
     @GetMapping("")
-    public ResponseEntity<?> getAllDrinks() {
-        List<Drink> allDrinks = drinkRepository.findAll();
-        return new ResponseEntity<>(allDrinks, HttpStatus.OK); //200
+    public ResponseEntity<List<DrinkDTO>> getAllDrinks() {
+
+        List<DrinkDTO> drinks = drinkRepository.findAll()
+                .stream()
+                .map(DrinkDTO::new)
+                .toList();
+
+        return ResponseEntity.ok(drinks);
     }
 
     //    Retrieve a specific drink object using its id
@@ -35,9 +40,10 @@ public class DrinkController {
     @GetMapping("/details/{drinkId}")
     public ResponseEntity<?> getDrinkById(@PathVariable int drinkId) {
         return drinkRepository.findById(drinkId)
-                .map(drink -> new ResponseEntity<>(drink, HttpStatus.OK)) //200
-                .orElseGet(() -> new ResponseEntity<>(HttpStatus.NOT_FOUND)); //404
+                .map(drink -> ResponseEntity.ok(new DrinkDTO(drink)))
+                .orElseGet(() -> ResponseEntity.status(HttpStatus.NOT_FOUND).body(null));
     }
+
 
 
     //     Save a new drink to the database
