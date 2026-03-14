@@ -3,16 +3,16 @@ import { Link } from "react-router-dom";
 
 const UserDashboard = ({ currentUser }) => {
   if (!currentUser) {
-    return <p>Please log in to view your dashboard</p>; 
+    return <p>Please log in to view your dashboard</p>;
   }
 
   return (
-   <main>
+    <main>
+
       <h1>Welcome, {currentUser.username}!</h1>
       <p>What would you like to explore today?</p>
 
-      <div className="dashboard-links">
-
+      <div className="dashboard-links-grid">
         <Link to="/recipes" className="dashboard-card">
           🍹 Browse All Recipes
         </Link>
@@ -24,7 +24,6 @@ const UserDashboard = ({ currentUser }) => {
         <Link to="/reviews" className="dashboard-card">
           📝 My Reviews & Ratings
         </Link>
-
       </div>
     </main>
   );
