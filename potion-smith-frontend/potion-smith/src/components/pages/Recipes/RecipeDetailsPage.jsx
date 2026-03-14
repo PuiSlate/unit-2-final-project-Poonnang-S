@@ -1,19 +1,57 @@
 import { useParams, useNavigate } from "react-router-dom";
+import { useEffect, useState } from "react";
 import { recipeImages } from "../../../assets/images/images";
 
-const RecipeDetailsPage = ({ recipes, setRecipes }) => {
+const RecipeDetailsPage = () => {
   const { id } = useParams();
   const navigate = useNavigate();
+  const [recipe, setRecipe] = useState(null);
+  const [error, setError] = useState(""); 
+  const [loading, setLoading] = useState(true);
 
-  // Find recipe from global state
-  const recipe = recipes.find((r) => r.id === parseInt(id));
+  useEffect(() => {
+    const fetchRecipe = async () => {
+      setLoading(true);
+      setError("");
+      try {
+        const response = await fetch(`http://localhost:8080/api/drinks/details/${id}`);
 
-  if (!recipe) {
+        if (response.status === 404) {
+          setError("Recipe not found");
+          setRecipe(null);
+        } else if (!response.ok) {
+          setError("Failed to load recipe");
+          setRecipe(null);
+        } else {
+          const data = await response.json();
+          setRecipe(data);
+        }
+      } catch (err) {
+        console.error("Error fetching recipe:", err);
+        setError("Error fetching recipe");
+        setRecipe(null);
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    fetchRecipe();
+  }, [id]);
+
+  if (loading) {
     return (
       <main className="recipe-details-page">
-        <h2>Recipe not found</h2>
+        <h2>Loading recipe...</h2>
+      </main>
+    );
+  }
+
+  if (error) {
+    return (
+      <main className="recipe-details-page">
+        <h2>{error}</h2>
         <button className="back-button" onClick={() => navigate("/recipes")}>
-          Back to All Recipes
+          ← Back to All Recipes
         </button>
       </main>
     );
@@ -21,21 +59,29 @@ const RecipeDetailsPage = ({ recipes, setRecipes }) => {
 
   const maxRating = 5;
 
-  // Update rating in global state
   const handleRating = (rating) => {
-    const updatedRecipes = recipes.map((r) =>
-      r.id === recipe.id ? { ...r, rating } : r
-    );
-    setRecipes(updatedRecipes);
+    setRecipe({ ...recipe, userRating: rating });
   };
 
-  // Toggle favorite in global state
   const toggleFavorite = () => {
-    const updatedRecipes = recipes.map((r) =>
-      r.id === recipe.id ? { ...r, isFavorite: !r.isFavorite } : r
-    );
-    setRecipes(updatedRecipes);
+    setRecipe({ ...recipe, isFavorite: !recipe.isFavorite });
   };
+
+  // Split instructions without adding extra periods
+  const instructionSteps = recipe.drinkInstructions
+    ? recipe.drinkInstructions
+        .split(/\.\s+/)
+        .map((step) => step.trim())
+        .filter((step) => step.length > 0)
+    : [];
+
+  // Split ingredients
+  const ingredientList = recipe.drinkIngredients
+    ? recipe.drinkIngredients
+        .split(";")
+        .map((item) => item.trim())
+        .filter((item) => item.length > 0)
+    : [];
 
   return (
     <main className="recipe-details-page">
@@ -46,12 +92,12 @@ const RecipeDetailsPage = ({ recipes, setRecipes }) => {
       <div className="recipe-details-header">
         <img
           className="recipe-details-image"
-          src={recipe.imageID ? recipeImages[recipe.imageID] : recipeImages["fallback.jpg"]}
-          alt={recipe.name}
+          src={recipeImages[recipe.imageId] || recipeImages["fallback.jpg"]}
+          alt={recipe.drinkName}
         />
         <div>
-          <h1>{recipe.name}</h1>
-          <h3>{recipe.category}</h3>
+          <h1>{recipe.drinkName}</h1>
+          <h3>{recipe.spiritCategory || recipe.category}</h3>
 
           {/* Rating Section */}
           <div className="recipe-rating">
@@ -61,8 +107,10 @@ const RecipeDetailsPage = ({ recipes, setRecipes }) => {
                 const starNumber = i + 1;
                 return (
                   <span
-                    key={starNumber}
-                    className={`star ${starNumber <= (recipe.rating || 0) ? "filled" : ""}`}
+                    key={`star-${starNumber}`}
+                    className={`star ${
+                      starNumber <= (recipe.userRating || 0) ? "filled" : ""
+                    }`}
                     onClick={() => handleRating(starNumber)}
                   >
                     ★
@@ -70,8 +118,10 @@ const RecipeDetailsPage = ({ recipes, setRecipes }) => {
                 );
               })}
             </div>
-            {recipe.rating > 0 && (
-              <p>You rated this recipe {recipe.rating} out of {maxRating} stars</p>
+            {recipe.userRating > 0 && (
+              <p>
+                You rated this recipe {recipe.userRating} out of {maxRating} stars
+              </p>
             )}
           </div>
 
@@ -91,9 +141,11 @@ const RecipeDetailsPage = ({ recipes, setRecipes }) => {
       <section>
         <h2>Ingredients</h2>
         <ul>
-          {recipe.ingredients?.map((item, index) => (
-            <li key={index}>{item}</li>
-          ))}
+          {ingredientList.length > 0
+            ? ingredientList.map((item, index) => (
+                <li key={`${item}-${index}`}>{item}</li>
+              ))
+            : <li>No ingredients listed</li>}
         </ul>
       </section>
 
@@ -101,9 +153,11 @@ const RecipeDetailsPage = ({ recipes, setRecipes }) => {
       <section>
         <h2>Instructions</h2>
         <ol>
-          {recipe.instructions?.map((step, index) => (
-            <li key={index}>{step}</li>
-          ))}
+          {instructionSteps.length > 0
+            ? instructionSteps.map((step, index) => (
+                <li key={`${step}-${index}`}>{step}.</li>
+              ))
+            : <li>No instructions listed</li>}
         </ol>
       </section>
     </main>
