@@ -4,6 +4,7 @@ import { recipeImages } from "../../../assets/images/images";
 
 const RecipeDetailsPage = () => {
   const { id } = useParams();
+  console.log("ID from URL:", id);  
   const navigate = useNavigate();
   const [recipe, setRecipe] = useState(null);
   const [error, setError] = useState(""); 
@@ -11,6 +12,12 @@ const RecipeDetailsPage = () => {
 
   useEffect(() => {
     const fetchRecipe = async () => {
+      if (!id) {
+        setError("Invalid recipe id");
+        setRecipe(null);
+        setLoading(false);
+        return;
+      }
       setLoading(true);
       setError("");
       try {
@@ -97,7 +104,7 @@ const RecipeDetailsPage = () => {
         />
         <div>
           <h1>{recipe.drinkName}</h1>
-          <h3>{recipe.spiritCategory || recipe.category}</h3>
+          <h3>{recipe.spiritCategory}</h3>
 
           {/* Rating Section */}
           <div className="recipe-rating">
@@ -162,6 +169,7 @@ const RecipeDetailsPage = () => {
       </section>
     </main>
   );
+  
 };
 
 export default RecipeDetailsPage;

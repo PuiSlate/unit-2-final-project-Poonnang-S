@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { Routes, Route, Navigate } from "react-router";
+import { Routes, Route, Navigate } from "react-router-dom";
 import Header from "./components/Layout/Header";
 import Footer from "./components/Layout/Footer";
 import RecipesPage from "./components/pages/Recipes/RecipesPage";
@@ -46,7 +46,7 @@ function App() {
         <Route
           path="/recipes/:id"
           element={
-            <RecipeDetailsPage recipes={recipes} setRecipes={setRecipes} />
+            <RecipeDetailsPage />
           }
         />
         <Route path="/contact" element={<ContactPage />} />
