@@ -34,9 +34,11 @@ public class DrinkController {
 //    GET http://localhost:8080/api/drinks/details/3 (for example)
     @GetMapping("/details/{drinkId}")
     public ResponseEntity<?> getDrinkById(@PathVariable int drinkId) {
-        Drink drink = drinkRepository.findById(drinkId).orElse(null);
-        return new ResponseEntity<>(drink, HttpStatus.OK); // 200
+        return drinkRepository.findById(drinkId)
+                .map(drink -> new ResponseEntity<>(drink, HttpStatus.OK)) //200
+                .orElseGet(() -> new ResponseEntity<>(HttpStatus.NOT_FOUND)); //404
     }
+
 
     //     Save a new drink to the database
 //    refactored from RequestParams to a RESTful controller by using @RequestBody to accept JSON

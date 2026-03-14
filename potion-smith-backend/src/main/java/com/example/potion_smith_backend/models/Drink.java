@@ -3,6 +3,7 @@ import com.fasterxml.jackson.annotation.JsonBackReference;
 import com.fasterxml.jackson.annotation.JsonManagedReference;
 import jakarta.persistence.*;
 
+import javax.swing.*;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -140,4 +141,5 @@ public class Drink {
         result = 31 * result + (onWeeklyFeature ? 1 : 0);
         return result;
     }
+
 }
