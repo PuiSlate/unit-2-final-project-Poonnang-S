@@ -29,6 +29,7 @@ public class Drink {
     private String imageId;
     private boolean onWeeklyFeature;
 
+
     // One drink can have many comments
     @OneToMany(mappedBy = "drink", cascade = CascadeType.ALL)
     @JsonManagedReference
@@ -109,6 +110,14 @@ public class Drink {
 
     public void setOnWeeklyFeature(boolean onWeeklyFeature) {
         this.onWeeklyFeature = onWeeklyFeature;
+    }
+
+    public ThemeCategory getThemeCategory() {
+        return themeCategory;
+    }
+
+    public SpiritCategory getSpiritCategory() {
+        return spiritCategory;
     }
 
     @Override

@@ -23,16 +23,14 @@ public class DrinkController {
     //    Retrieve all drinks from database
     // refactored to return a ResponseEntity object with an HttpStatus of 200 OK
 //    GET http://localhost:8080/api/drinks
-//    @GetMapping("")
-//    public ResponseEntity<List<DrinkDTO>> getAllDrinks() {
-//
-//        List<DrinkDTO> drinks = drinkRepository.findAll()
-//                .stream()
-//                .map(DrinkDTO::new)
-//                .toList();
-//
-//        return ResponseEntity.ok(drinks);
-//    }
+    @GetMapping("")
+    public ResponseEntity<List<DrinkDTO>> getAllDrinks() {
+        List<DrinkDTO> drinks = drinkRepository.findAll()
+                .stream()
+                .map(DrinkDTO::new)
+                .toList();
+        return ResponseEntity.ok(drinks);
+    }
 
     //    Retrieve a specific drink object using its id
 //    refactored to return a ResponseEntity object with an HttpStatus of 200 OK
