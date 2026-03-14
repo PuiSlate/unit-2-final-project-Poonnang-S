@@ -3,6 +3,7 @@ import com.fasterxml.jackson.annotation.JsonBackReference;
 import com.fasterxml.jackson.annotation.JsonManagedReference;
 import jakarta.persistence.*;
 
+import javax.swing.*;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -25,8 +26,9 @@ public class Drink {
     @Column(nullable = false)
     private String drinkIngredients;
 
-    private int imageId;
+    private String imageId;
     private boolean onWeeklyFeature;
+
 
     // One drink can have many comments
     @OneToMany(mappedBy = "drink", cascade = CascadeType.ALL)
@@ -57,7 +59,7 @@ public class Drink {
 
     public Drink() {};
 
-    public Drink(String drinkName, String drinkInstructions, String drinkIngredients, int imageId, boolean onWeeklyFeature) {
+    public Drink(String drinkName, String drinkInstructions, String drinkIngredients, String imageId, boolean onWeeklyFeature) {
         this.drinkName = drinkName;
         this.drinkInstructions = drinkInstructions;
         this.drinkIngredients = drinkIngredients;
@@ -94,11 +96,11 @@ public class Drink {
         this.drinkIngredients = drinkIngredients;
     }
 
-    public int getImageId() {
+    public String getImageId() {
         return imageId;
     }
 
-    public void setImageId(int imageId) {
+    public void setImageId(String imageId) {
         this.imageId = imageId;
     }
 
@@ -108,6 +110,14 @@ public class Drink {
 
     public void setOnWeeklyFeature(boolean onWeeklyFeature) {
         this.onWeeklyFeature = onWeeklyFeature;
+    }
+
+    public ThemeCategory getThemeCategory() {
+        return themeCategory;
+    }
+
+    public SpiritCategory getSpiritCategory() {
+        return spiritCategory;
     }
 
     @Override
@@ -136,8 +146,9 @@ public class Drink {
         result = 31 * result + drinkName.hashCode();
         result = 31 * result + drinkInstructions.hashCode();
         result = 31 * result + drinkIngredients.hashCode();
-        result = 31 * result + imageId;
+        result = 31 * result + imageId.hashCode();
         result = 31 * result + (onWeeklyFeature ? 1 : 0);
         return result;
     }
+
 }

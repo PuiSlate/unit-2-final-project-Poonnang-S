@@ -16,6 +16,7 @@ public class User {
     private String username;
     private String email;
     private String age;
+    private String password;
 
 //    One user can have many comments
     @OneToMany (mappedBy = "user", cascade = CascadeType.ALL)
@@ -33,10 +34,11 @@ public class User {
 
     public User() {};
 
-    public User(String username, String email, String age) {
+    public User(String username, String email, String age, String password) {
         this.username = username;
         this.email = email;
         this.age = age;
+        this.password = password;
     }
 
     public int getId() {
@@ -65,5 +67,12 @@ public class User {
 
     public void setAge(String age) {
         this.age = age;
+    }
+
+    public String getPassword() {
+        return password;
+    }
+    public void setPassword(String password) {
+        this.password = password;
     }
 }

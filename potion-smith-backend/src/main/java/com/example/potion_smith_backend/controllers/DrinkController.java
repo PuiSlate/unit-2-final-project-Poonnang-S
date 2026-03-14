@@ -12,6 +12,7 @@ import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
+@CrossOrigin(origins = "http://localhost:5173/") // Allow CORS requests from the React frontend running on port 5173
 @RestController
 @RequestMapping("/api/drinks")
 public class DrinkController {
@@ -23,19 +24,25 @@ public class DrinkController {
     // refactored to return a ResponseEntity object with an HttpStatus of 200 OK
 //    GET http://localhost:8080/api/drinks
     @GetMapping("")
-    public ResponseEntity<?> getAllDrinks() {
-        List<Drink> allDrinks = drinkRepository.findAll();
-        return new ResponseEntity<>(allDrinks, HttpStatus.OK); //200
+    public ResponseEntity<List<DrinkDTO>> getAllDrinks() {
+        List<DrinkDTO> drinks = drinkRepository.findAll()
+                .stream()
+                .map(DrinkDTO::new)
+                .toList();
+        return ResponseEntity.ok(drinks);
     }
 
     //    Retrieve a specific drink object using its id
 //    refactored to return a ResponseEntity object with an HttpStatus of 200 OK
 //    GET http://localhost:8080/api/drinks/details/3 (for example)
     @GetMapping("/details/{drinkId}")
-    public ResponseEntity<?> getDrinkById(@PathVariable int drinkId) {
-        Drink drink = drinkRepository.findById(drinkId).orElse(null);
-        return new ResponseEntity<>(drink, HttpStatus.OK); // 200
+    public ResponseEntity<DrinkDTO> getDrinkById(@PathVariable int drinkId) {
+        return drinkRepository.findById(drinkId)
+                .map(drink -> ResponseEntity.ok(new DrinkDTO(drink)))
+                .orElseGet(() -> ResponseEntity.notFound().build());
     }
+
+
 
     //     Save a new drink to the database
 //    refactored from RequestParams to a RESTful controller by using @RequestBody to accept JSON
@@ -53,7 +60,7 @@ public class DrinkController {
 
     //    Delete a drink from the database
 //    DELETE http://localhost:8080/api/drinks/3 (for example)
-    @DeleteMapping("/{drinkId}")
+    @DeleteMapping("/drinks/{id}")
     public ResponseEntity<Void> deleteDrink(@PathVariable int drinkId) {
         return drinkRepository.findById(drinkId)
                 .map(drink -> {
@@ -63,5 +70,20 @@ public class DrinkController {
                 .orElseGet(() -> new ResponseEntity<>(HttpStatus.NOT_FOUND));
 
     }
+
+//    Put endpoint to update an existing drink in the database
+//    PUT http://localhost:8080/api/drinks/update/3 (for example)
+@PutMapping("/drinks/{id}")
+public ResponseEntity<Drink> updateDrink(@PathVariable int id, @RequestBody Drink updatedDrink) {
+    return drinkRepository.findById(id).map(drink -> {
+        drink.setDrinkName(updatedDrink.getDrinkName());
+        drink.setDrinkIngredients(updatedDrink.getDrinkIngredients());
+        drink.setDrinkInstructions(updatedDrink.getDrinkInstructions());
+        drink.setImageId(updatedDrink.getImageId());
+        drink.setOnWeeklyFeature(updatedDrink.isOnWeeklyFeature());
+        drinkRepository.save(drink);
+        return ResponseEntity.ok(drink);
+    }).orElse(ResponseEntity.notFound().build());
+}
 }
 

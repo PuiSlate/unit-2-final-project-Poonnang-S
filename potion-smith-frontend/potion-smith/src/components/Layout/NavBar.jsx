@@ -1,10 +1,10 @@
 import { Link, useNavigate, useLocation } from "react-router-dom";
 
-const NavBar = () => {
+const NavBar = ({ isLoggedIn, setIsLoggedIn, currentUser, setCurrentUser }) => {
   const navigate = useNavigate();
   const location = useLocation();
 
-   // Read search text directly from URL
+  // Read search text directly from URL
   const params = new URLSearchParams(location.search);
   const searchQuery = params.get("search") || "";
 
@@ -39,10 +39,38 @@ const NavBar = () => {
       </div>
 
       <ul className="navbar-links">
-        <li><Link to="/recipes">Recipes</Link></li>
-        <li><Link to="/about">About</Link></li>
-        <li><Link to="/contact">Contact</Link></li>
-        <li><Link to="/subscribe">Subscribe</Link></li>
+        <li>
+          <Link to="/recipes">Recipes</Link>
+        </li>
+        <li>
+          <Link to="/about">About</Link>
+        </li>
+        <li>
+          <Link to="/contact">Contact</Link>
+        </li>
+        <li>
+          <Link to="/subscribe">Subscribe</Link>
+        </li>
+
+        {/* LOGIN/LOGOUT */}
+        <li>
+          {isLoggedIn ? (
+            <>
+              <span>Welcome, {currentUser?.username}</span>
+              <button
+                onClick={() => {
+                  setIsLoggedIn(false);
+                  setCurrentUser(null);
+                  navigate("/");
+                }}
+              >
+                Log Out
+              </button>
+            </>
+          ) : (
+            <Link to="/login">Log In</Link>
+          )}
+        </li>
       </ul>
 
       <form className="navbar-search" onSubmit={handleSearch}>

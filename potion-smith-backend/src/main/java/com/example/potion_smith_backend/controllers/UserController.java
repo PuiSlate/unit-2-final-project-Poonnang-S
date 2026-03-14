@@ -33,8 +33,29 @@ public class UserController {
 
     @PostMapping(value= "/add", consumes= MediaType.APPLICATION_JSON_VALUE)
     public User createUser(@RequestBody UserDTO userData) {
-        User user = new User(userData.getUsername(), userData.getEmail(), userData.getAge());
+        User user = new User(userData.getUsername(), userData.getEmail(), userData.getAge(), userData.getPassword());
         return userService.save(user);
+    }
+
+//    Login endpoint to authenticate users based on their email and password.
+//    It retrieves all users from the database and checks if the provided email and password match
+//    any existing user. If a match is found, it returns the corresponding user object; otherwise,
+//    it throws a RuntimeException indicating invalid credentials.
+    @PostMapping(value="/login", consumes = MediaType.APPLICATION_JSON_VALUE)
+    public User login(@RequestBody UserDTO userData) {
+
+        List<User> users = userService.findAll();
+
+        for (User user : users) {
+            if (user.getEmail() != null &&
+                    user.getEmail().equals(userData.getEmail()) &&
+                    user.getPassword().equals(userData.getPassword())) {
+
+                return user;
+            }
+        }
+
+        throw new RuntimeException("Invalid email or password");
     }
 
 

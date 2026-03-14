@@ -1,13 +1,12 @@
-const Card = ({ children, clickable, ...props }) => {
-    return (
-        <div
-            className={`card ${clickable ? 'clickable-card' : ''}`}
-            {...props}
-            
-        >
-            {children}
-        </div>
-    );
+const Card = ({ children, clickable, onClick }) => {
+  return (
+    <div
+      className={`card ${clickable ? 'clickable-card' : ''}`}
+      onClick={onClick} // ✅ Attach onClick directly
+    >
+      {children}
+    </div>
+  );
 };
 
 export default Card;
