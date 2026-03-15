@@ -47,13 +47,13 @@ public class Drink {
 
 //    Many drinks can belong to one theme category
     @ManyToOne
-    @JoinColumn(name = "theme_category_title", referencedColumnName = "title")
+    @JoinColumn(name = "theme_category_id", referencedColumnName = "id")
     @JsonBackReference
     private ThemeCategory themeCategory;
 
 //    Many drinks can belong to one spirit category
     @ManyToOne
-    @JoinColumn(name = "spirit_category_title", referencedColumnName = "title")
+    @JoinColumn(name = "spirit_category_id", referencedColumnName = "id")
     @JsonBackReference
     private SpiritCategory spiritCategory;
 
@@ -121,10 +121,12 @@ public class Drink {
     }
 
     public void setThemeCategory(ThemeCategory themeCategory) {
+        this.themeCategory = themeCategory;
 
     }
 
     public void setSpiritCategory(SpiritCategory spiritCategory) {
+        this.spiritCategory = spiritCategory;
 
     }
 
