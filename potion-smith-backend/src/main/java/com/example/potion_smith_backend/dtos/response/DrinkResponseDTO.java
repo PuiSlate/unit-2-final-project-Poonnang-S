@@ -13,8 +13,8 @@ public class DrinkResponseDTO {
     public DrinkResponseDTO(Drink drink) {
         this.drinkName = drink.getDrinkName();
         this.drinkIngredients = drink.getDrinkIngredients();
-        this.drinkInstructions = drink.getDrinkInstructions()
-        this.imageId = drink.getImageId()
+        this.drinkInstructions = drink.getDrinkInstructions();
+        this.imageId = drink.getImageId();
         this.spiritCategoryTitle = drink.getDrinkIngredients() != null
                 ? drink.getSpiritCategory().getTitle()
                 : null;
