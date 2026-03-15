@@ -3,6 +3,7 @@ package com.example.potion_smith_backend.dtos.response;
 import com.example.potion_smith_backend.models.Drink;
 
 public class DrinkResponseDTO {
+    private int id;
     private String drinkName;
     private String drinkIngredients;
     private String drinkInstructions;
@@ -11,11 +12,12 @@ public class DrinkResponseDTO {
     private String themeCategoryTitle;
 
     public DrinkResponseDTO(Drink drink) {
+        this.id = drink.getId();
         this.drinkName = drink.getDrinkName();
         this.drinkIngredients = drink.getDrinkIngredients();
         this.drinkInstructions = drink.getDrinkInstructions();
         this.imageId = drink.getImageId();
-        this.spiritCategoryTitle = drink.getDrinkIngredients() != null
+        this.spiritCategoryTitle = drink.getSpiritCategory() != null
                 ? drink.getSpiritCategory().getTitle()
                 : null;
         this.themeCategoryTitle = drink.getThemeCategory() != null
@@ -24,6 +26,15 @@ public class DrinkResponseDTO {
     }
 
 //    Getters & Setters
+
+    public int getId() {
+        return id;
+    }
+
+    public void setId(int id) {
+        this.id = id;
+    }
+
     public String getDrinkName() {
         return drinkName;
     }
