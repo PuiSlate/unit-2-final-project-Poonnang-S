@@ -40,7 +40,7 @@ public class DrinkDTO {
         this.imageId = drink.getImageId();
         this.onWeeklyFeature = drink.isOnWeeklyFeature();
         this.id = drink.getId();
-        this.spiritCategory = drink.getSpiritCategory() != null ? drink.getSpiritCategory().getId() : null;
+        this.spiritCategory = drink.getSpiritCategory() != null ? drink.getSpiritCategory().getId(): null;
         this.themeCategory = drink.getThemeCategory() != null ? drink.getThemeCategory().getId() : null;
     }
 
@@ -60,5 +60,7 @@ public class DrinkDTO {
     public Integer getThemeCategory() { return themeCategory; }
     public void setThemeCategory(Integer themeCategory) { this.themeCategory = themeCategory; }
     public int getId() { return id; }
-
+    public void setId(int id) {
+        this.id = id;
+    }
 }
