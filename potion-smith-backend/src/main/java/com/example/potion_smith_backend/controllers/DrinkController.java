@@ -1,8 +1,13 @@
 package com.example.potion_smith_backend.controllers;
 
 import com.example.potion_smith_backend.dtos.DrinkDTO;
+import com.example.potion_smith_backend.dtos.response.DrinkResponseDTO;
 import com.example.potion_smith_backend.models.Drink;
+import com.example.potion_smith_backend.models.SpiritCategory;
+import com.example.potion_smith_backend.models.ThemeCategory;
 import com.example.potion_smith_backend.repositories.DrinkRepository;
+import com.example.potion_smith_backend.repositories.SpiritCategoryRepository;
+import com.example.potion_smith_backend.repositories.ThemeCategoryRepository;
 import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -19,15 +24,31 @@ public class DrinkController {
 
     @Autowired
     DrinkRepository drinkRepository;
+    @Autowired
+    SpiritCategoryRepository spiritCategoryRepository;
+    @Autowired
+    ThemeCategoryRepository themeCategoryRepository;
+
+    // Constructor injection
+    public DrinkController(
+            DrinkRepository drinkRepository,
+            SpiritCategoryRepository spiritCategoryRepository,
+            ThemeCategoryRepository themeCategoryRepository
+    ) {
+        this.drinkRepository = drinkRepository;
+        this.spiritCategoryRepository = spiritCategoryRepository;
+        this.themeCategoryRepository = themeCategoryRepository;
+    }
+
 
     //    Retrieve all drinks from database
     // refactored to return a ResponseEntity object with an HttpStatus of 200 OK
 //    GET http://localhost:8080/api/drinks
     @GetMapping("")
-    public ResponseEntity<List<DrinkDTO>> getAllDrinks() {
-        List<DrinkDTO> drinks = drinkRepository.findAll()
+    public ResponseEntity<List<DrinkResponseDTO>> getAllDrinks() {
+        List<DrinkResponseDTO> drinks = drinkRepository.findAll()
                 .stream()
-                .map(DrinkDTO::new)
+                .map(DrinkResponseDTO::new)
                 .toList();
         return ResponseEntity.ok(drinks);
     }
@@ -36,9 +57,9 @@ public class DrinkController {
 //    refactored to return a ResponseEntity object with an HttpStatus of 200 OK
 //    GET http://localhost:8080/api/drinks/details/3 (for example)
     @GetMapping("/details/{drinkId}")
-    public ResponseEntity<DrinkDTO> getDrinkById(@PathVariable int drinkId) {
+    public ResponseEntity<DrinkResponseDTO> getDrinkById(@PathVariable int drinkId) {
         return drinkRepository.findById(drinkId)
-                .map(drink -> ResponseEntity.ok(new DrinkDTO(drink)))
+                .map(drink -> ResponseEntity.ok(new DrinkResponseDTO(drink)))
                 .orElseGet(() -> ResponseEntity.notFound().build());
     }
 
@@ -60,7 +81,7 @@ public class DrinkController {
 
     //    Delete a drink from the database
 //    DELETE http://localhost:8080/api/drinks/3 (for example)
-    @DeleteMapping("/drinks/{id}")
+    @DeleteMapping("/{id}")
     public ResponseEntity<Void> deleteDrink(@PathVariable int drinkId) {
         return drinkRepository.findById(drinkId)
                 .map(drink -> {
@@ -71,18 +92,44 @@ public class DrinkController {
 
     }
 
-//    Put endpoint to update an existing drink in the database
+//    Put endpoint to UPDATE an existing drink in the database. Frontend JSON request (no nested objects, just titles)
 //    PUT http://localhost:8080/api/drinks/update/3 (for example)
-@PutMapping("/drinks/{id}")
-public ResponseEntity<Drink> updateDrink(@PathVariable int id, @RequestBody Drink updatedDrink) {
+@PutMapping("/{id}")
+public ResponseEntity<DrinkResponseDTO> updateDrink(@PathVariable int id, @RequestBody DrinkDTO updatedDrinkDTO) {
+
     return drinkRepository.findById(id).map(drink -> {
-        drink.setDrinkName(updatedDrink.getDrinkName());
-        drink.setDrinkIngredients(updatedDrink.getDrinkIngredients());
-        drink.setDrinkInstructions(updatedDrink.getDrinkInstructions());
-        drink.setImageId(updatedDrink.getImageId());
-        drink.setOnWeeklyFeature(updatedDrink.isOnWeeklyFeature());
+
+        // --- update basic fields ---
+        drink.setDrinkName(updatedDrinkDTO.getDrinkName());
+        drink.setDrinkIngredients(updatedDrinkDTO.getDrinkIngredients());
+        drink.setDrinkInstructions(updatedDrinkDTO.getDrinkInstructions());
+        drink.setImageId(updatedDrinkDTO.getImageId());
+        drink.setOnWeeklyFeature(updatedDrinkDTO.isOnWeeklyFeature());
+
+        // --- fetch managed SpiritCategory from DB ---
+        if (updatedDrinkDTO.getSpiritCategory() != null) {
+            SpiritCategory spirit = spiritCategoryRepository.findById(updatedDrinkDTO.getSpiritCategory())
+                    .orElseThrow(() -> new RuntimeException("SpiritCategory not found: " + updatedDrinkDTO.getSpiritCategory()));
+            drink.setSpiritCategory(spirit);
+        } else {
+            drink.setSpiritCategory(null);
+        }
+
+        // --- fetch managed ThemeCategory from DB ---
+        if (updatedDrinkDTO.getThemeCategory() != null) {
+            ThemeCategory theme = themeCategoryRepository.findById(updatedDrinkDTO.getThemeCategory())
+                    .orElseThrow(() -> new RuntimeException("ThemeCategory not found: " + updatedDrinkDTO.getThemeCategory()));
+            drink.setThemeCategory(theme);
+        } else {
+            drink.setThemeCategory(null);
+        }
+
+        // --- save the drink ---
         drinkRepository.save(drink);
-        return ResponseEntity.ok(drink);
+
+        // --- return updated DrinkDTO ---
+        return ResponseEntity.ok(new DrinkResponseDTO(drink));
+
     }).orElse(ResponseEntity.notFound().build());
 }
 }

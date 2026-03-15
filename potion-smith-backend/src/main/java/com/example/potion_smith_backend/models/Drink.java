@@ -120,6 +120,14 @@ public class Drink {
         return spiritCategory;
     }
 
+    public void setThemeCategory(ThemeCategory themeCategory) {
+
+    }
+
+    public void setSpiritCategory(SpiritCategory spiritCategory) {
+
+    }
+
     @Override
     public String toString() {
         return drinkName + " (" + drinkIngredients + "): " + drinkInstructions + " | Image ID: " + imageId + " | Weekly Feature: " + onWeeklyFeature;
@@ -150,5 +158,6 @@ public class Drink {
         result = 31 * result + (onWeeklyFeature ? 1 : 0);
         return result;
     }
+
 
 }

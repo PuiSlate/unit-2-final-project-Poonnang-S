@@ -15,8 +15,13 @@ public class DrinkDTO {
     private String drinkIngredients;
     private String imageId;
     private boolean onWeeklyFeature;
-    private String spiritCategory; // NEW: Added to include spirit category title in the DTO
-    private String themeCategory; // NEW: Added to include theme category title in the DTO
+//    Integer is used instead of int for the category IDs because
+//    they can be null if the drink doesn't have a category assigned
+    private Integer spiritCategory;
+    private Integer themeCategory;
+
+//    no-args constructor for Spring to use when converting JSON to DTO
+    public DrinkDTO() {}
 
     // Existing constructor for POST requests
     public DrinkDTO(String drinkName, String drinkInstructions, String drinkIngredients, String imageId, boolean onWeeklyFeature) {
@@ -27,16 +32,16 @@ public class DrinkDTO {
         this.onWeeklyFeature = onWeeklyFeature;
     }
 
-    // NEW: Constructor to convert a Drink entity to DTO (for GET endpoints)
+    // NEW: Constructor to convert a Drink entity to DTO
     public DrinkDTO(Drink drink) {
         this.drinkName = drink.getDrinkName();
         this.drinkInstructions = drink.getDrinkInstructions();
         this.drinkIngredients = drink.getDrinkIngredients();
         this.imageId = drink.getImageId();
         this.onWeeklyFeature = drink.isOnWeeklyFeature();
-        this.id = drink.getId(); // Include ID in the DTO
-        this.spiritCategory = drink.getSpiritCategory () != null ? drink.getSpiritCategory().getTitle() : null; // Safely get spirit category title
-        this.themeCategory = drink.getThemeCategory() != null ? drink.getThemeCategory().getTitle() : null; // Safely get theme category title
+        this.id = drink.getId();
+        this.spiritCategory = drink.getSpiritCategory() != null ? drink.getSpiritCategory().getId() : null;
+        this.themeCategory = drink.getThemeCategory() != null ? drink.getThemeCategory().getId() : null;
     }
 
     // Getters & Setters
@@ -50,9 +55,10 @@ public class DrinkDTO {
     public void setImageId(String imageId) { this.imageId = imageId; }
     public boolean isOnWeeklyFeature() { return onWeeklyFeature; }
     public void setOnWeeklyFeature(boolean onWeeklyFeature) { this.onWeeklyFeature = onWeeklyFeature; }
-    public String getSpiritCategory() { return spiritCategory; }
-    public void setSpiritCategory(String spiritCategory) { this.spiritCategory = spiritCategory; }
-    public String getThemeCategory() { return themeCategory; }
-    public void setThemeCategory(String themeCategory) { this.themeCategory = themeCategory; }
+    public Integer getSpiritCategory() { return spiritCategory; }
+    public void setSpiritCategory(Integer spiritCategory) { this.spiritCategory = spiritCategory; }
+    public Integer getThemeCategory() { return themeCategory; }
+    public void setThemeCategory(Integer themeCategory) { this.themeCategory = themeCategory; }
     public int getId() { return id; }
+
 }

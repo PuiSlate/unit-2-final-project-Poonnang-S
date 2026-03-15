@@ -1,20 +1,29 @@
 package com.example.potion_smith_backend.dtos.response;
 
+import com.example.potion_smith_backend.models.Drink;
+
 public class DrinkResponseDTO {
     private String drinkName;
     private String drinkIngredients;
     private String drinkInstructions;
     private String imageId;
     private String spiritCategoryTitle;
+    private String themeCategoryTitle;
 
-    public DrinkResponseDTO(String drinkName, String drinkIngredients, String drinkInstructions, String imageId, String spiritCategoryTitle) {
-        this.drinkName = drinkName;
-        this.drinkIngredients = drinkIngredients;
-        this.drinkInstructions = drinkInstructions;
-        this.imageId = imageId;
-        this.spiritCategoryTitle = spiritCategoryTitle;
+    public DrinkResponseDTO(Drink drink) {
+        this.drinkName = drink.getDrinkName();
+        this.drinkIngredients = drink.getDrinkIngredients();
+        this.drinkInstructions = drink.getDrinkInstructions()
+        this.imageId = drink.getImageId()
+        this.spiritCategoryTitle = drink.getDrinkIngredients() != null
+                ? drink.getSpiritCategory().getTitle()
+                : null;
+        this.themeCategoryTitle = drink.getThemeCategory() != null
+                ? drink.getThemeCategory().getTitle()
+                : null;
     }
 
+//    Getters & Setters
     public String getDrinkName() {
         return drinkName;
     }
@@ -54,5 +63,13 @@ public class DrinkResponseDTO {
 
     public void setSpiritCategoryTitle(String spiritCategoryTitle) {
         this.spiritCategoryTitle = spiritCategoryTitle;
+    }
+
+    public String getThemeCategoryTitle() {
+        return themeCategoryTitle;
+    }
+
+    public void setThemeCategoryTitle(String themeCategoryTitle) {
+        this.themeCategoryTitle = themeCategoryTitle;
     }
 }

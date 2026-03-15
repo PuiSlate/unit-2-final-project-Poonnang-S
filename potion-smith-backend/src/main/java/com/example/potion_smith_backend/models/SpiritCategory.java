@@ -36,3 +36,4 @@ public class SpiritCategory {
         this.title = title;
     }
 }
+
