@@ -3,32 +3,30 @@ import { useEffect, useState } from "react";
 import { recipeImages } from "../../../assets/images/images";
 
 const RecipeDetailsPage = () => {
-  const { id } = useParams();
-  console.log("ID from URL:", id);  
+  const { id } = useParams(); // id from URL
   const navigate = useNavigate();
   const [recipe, setRecipe] = useState(null);
-  const [error, setError] = useState(""); 
+  const [error, setError] = useState("");
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
     const fetchRecipe = async () => {
       if (!id) {
         setError("Invalid recipe id");
-        setRecipe(null);
         setLoading(false);
         return;
       }
+
       setLoading(true);
       setError("");
+
       try {
         const response = await fetch(`http://localhost:8080/api/drinks/details/${id}`);
 
         if (response.status === 404) {
           setError("Recipe not found");
-          setRecipe(null);
         } else if (!response.ok) {
           setError("Failed to load recipe");
-          setRecipe(null);
         } else {
           const data = await response.json();
           setRecipe(data);
@@ -36,7 +34,6 @@ const RecipeDetailsPage = () => {
       } catch (err) {
         console.error("Error fetching recipe:", err);
         setError("Error fetching recipe");
-        setRecipe(null);
       } finally {
         setLoading(false);
       }
@@ -45,24 +42,14 @@ const RecipeDetailsPage = () => {
     fetchRecipe();
   }, [id]);
 
-  if (loading) {
+  if (loading) return <h2>Loading recipe...</h2>;
+  if (error)
     return (
-      <main className="recipe-details-page">
-        <h2>Loading recipe...</h2>
-      </main>
-    );
-  }
-
-  if (error) {
-    return (
-      <main className="recipe-details-page">
+      <div>
         <h2>{error}</h2>
-        <button className="back-button" onClick={() => navigate("/recipes")}>
-          ← Back to All Recipes
-        </button>
-      </main>
+        <button onClick={() => navigate("/recipes")}>← Back to All Recipes</button>
+      </div>
     );
-  }
 
   const maxRating = 5;
 
@@ -74,27 +61,17 @@ const RecipeDetailsPage = () => {
     setRecipe({ ...recipe, isFavorite: !recipe.isFavorite });
   };
 
-  // Split instructions without adding extra periods
   const instructionSteps = recipe.drinkInstructions
-    ? recipe.drinkInstructions
-        .split(/\.\s+/)
-        .map((step) => step.trim())
-        .filter((step) => step.length > 0)
+    ? recipe.drinkInstructions.split(/\.\s+/).filter((s) => s.trim().length > 0)
     : [];
 
-  // Split ingredients
   const ingredientList = recipe.drinkIngredients
-    ? recipe.drinkIngredients
-        .split(";")
-        .map((item) => item.trim())
-        .filter((item) => item.length > 0)
+    ? recipe.drinkIngredients.split(";").filter((s) => s.trim().length > 0)
     : [];
 
   return (
     <main className="recipe-details-page">
-      <button className="back-button" onClick={() => navigate("/recipes")}>
-        ← Back to All Recipes
-      </button>
+      <button onClick={() => navigate("/recipes")}>← Back to All Recipes</button>
 
       <div className="recipe-details-header">
         <img
@@ -104,7 +81,8 @@ const RecipeDetailsPage = () => {
         />
         <div>
           <h1>{recipe.drinkName}</h1>
-          <h3>{recipe.spiritCategory}</h3>
+          <h3>{recipe.spiritCategoryTitle || "No Spirit Category"}</h3>
+          <h3>{recipe.themeCategoryTitle || "No Theme Category"}</h3>
 
           {/* Rating Section */}
           <div className="recipe-rating">
@@ -114,10 +92,8 @@ const RecipeDetailsPage = () => {
                 const starNumber = i + 1;
                 return (
                   <span
-                    key={`star-${starNumber}`}
-                    className={`star ${
-                      starNumber <= (recipe.userRating || 0) ? "filled" : ""
-                    }`}
+                    key={starNumber}
+                    className={`star ${starNumber <= (recipe.userRating || 0) ? "filled" : ""}`}
                     onClick={() => handleRating(starNumber)}
                   >
                     ★
@@ -135,7 +111,7 @@ const RecipeDetailsPage = () => {
           {/* Favorite Section */}
           <div className="favorite-section">
             <button
-              className={`favorite-btn ${recipe.isFavorite ? "favorited" : ""}`}
+              className={recipe.isFavorite ? "favorited" : ""}
               onClick={toggleFavorite}
             >
               {recipe.isFavorite ? "❤️ Favorited" : "🤍 Save Recipe"}
@@ -149,9 +125,7 @@ const RecipeDetailsPage = () => {
         <h2>Ingredients</h2>
         <ul>
           {ingredientList.length > 0
-            ? ingredientList.map((item, index) => (
-                <li key={`${item}-${index}`}>{item}</li>
-              ))
+            ? ingredientList.map((item, index) => <li key={`ing-${index}`}>{item}</li>)
             : <li>No ingredients listed</li>}
         </ul>
       </section>
@@ -161,15 +135,12 @@ const RecipeDetailsPage = () => {
         <h2>Instructions</h2>
         <ol>
           {instructionSteps.length > 0
-            ? instructionSteps.map((step, index) => (
-                <li key={`${step}-${index}`}>{step}.</li>
-              ))
+            ? instructionSteps.map((step, index) => <li key={`step-${index}`}>{step}.</li>)
             : <li>No instructions listed</li>}
         </ol>
       </section>
     </main>
   );
-  
 };
 
 export default RecipeDetailsPage;
