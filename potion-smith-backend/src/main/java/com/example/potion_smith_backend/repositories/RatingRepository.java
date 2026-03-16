@@ -9,4 +9,5 @@ import java.util.List;
 @Repository
 public interface RatingRepository extends JpaRepository<Rating, Integer> {
     List<Rating> findByDrinkId(int drinkId);
+    List<Rating> findByUserId(int userId);
 }
