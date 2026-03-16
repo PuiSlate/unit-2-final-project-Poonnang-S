@@ -9,44 +9,29 @@ const RecipeDetailsPage = ({ currentUser }) => {
   const [recipe, setRecipe] = useState(null);
   const [comments, setComments] = useState([]);
   const [reviewText, setReviewText] = useState("");
-  const [error, setError] = useState("");
+  const [ratings, setRatings] = useState([]);
+  const [userRating, setUserRating] = useState(0);
   const [loading, setLoading] = useState(true);
+  const [error, setError] = useState("");
 
   const isLoggedIn = !!currentUser;
-
-  // -------------------
-  // Fetch comments
-  // -------------------
-  const fetchComments = async () => {
-    try {
-      const response = await fetch(`http://localhost:8080/api/drinks/${id}/comments`);
-      if (!response.ok) throw new Error("Failed to load comments");
-      const data = await response.json();
-      setComments(data);
-    } catch (err) {
-      console.error(err);
-    }
-  };
+  const maxRating = 5;
 
   // -------------------
   // Fetch recipe details
   // -------------------
   const fetchRecipe = async () => {
-    if (!id) {
-      setError("Invalid recipe id");
-      setLoading(false);
-      return;
-    }
+    if (!id) return;
 
     setLoading(true);
     setError("");
 
     try {
-      const response = await fetch(`http://localhost:8080/api/drinks/details/${id}`);
-      if (response.status === 404) setError("Recipe not found");
-      else if (!response.ok) setError("Failed to load recipe");
+      const res = await fetch(`http://localhost:8080/api/drinks/details/${id}`);
+      if (res.status === 404) setError("Recipe not found");
+      else if (!res.ok) setError("Failed to load recipe");
       else {
-        const data = await response.json();
+        const data = await res.json();
         setRecipe(data);
       }
     } catch (err) {
@@ -58,55 +43,104 @@ const RecipeDetailsPage = ({ currentUser }) => {
   };
 
   // -------------------
-  // Run on mount
+  // Fetch comments
+  // -------------------
+  const fetchComments = async () => {
+    try {
+      const res = await fetch(
+        `http://localhost:8080/api/drinks/${id}/comments`,
+      );
+      if (!res.ok) throw new Error("Failed to load comments");
+      const data = await res.json();
+      setComments(data);
+    } catch (err) {
+      console.error(err);
+    }
+  };
+
+  // -------------------
+  // Fetch ratings
+  // -------------------
+  const fetchRatings = async () => {
+    // if (!isLoggedIn) return;
+
+    try {
+      const res = await fetch(`http://localhost:8080/api/drinks/${id}/ratings`);
+      if (!res.ok) throw new Error("Failed to load ratings");
+      const data = await res.json();
+
+      setRatings(data);
+
+      // current user's rating
+      const existing = currentUser
+        ? data.find((r) => r.userId === currentUser.id)
+        : null;
+      setUserRating(existing ? existing.stars : 0);
+
+      // average rating for display
+      if (data.length > 0) {
+        const avg = data.reduce((sum, r) => sum + r.stars, 0) / data.length;
+        setRecipe((prev) => ({ ...prev, averageRating: avg }));
+      }
+    } catch (err) {
+      console.error(err);
+    }
+  };
+
+  // -------------------
+  // Initial load
   // -------------------
   useEffect(() => {
     fetchRecipe();
     fetchComments();
-  }, [id]);
+    fetchRatings();
+  }, [id, currentUser]);
 
   if (loading) return <h2>Loading recipe...</h2>;
   if (error)
     return (
       <div>
         <h2>{error}</h2>
-        <button onClick={() => navigate("/recipes")}>← Back to All Recipes</button>
+        <button onClick={() => navigate("/recipes")}>
+          ← Back to All Recipes
+        </button>
       </div>
     );
 
   // -------------------
-  // Recipe details helpers
+  // Recipe helpers
   // -------------------
-  const maxRating = 5;
-  const instructionSteps = recipe?.drinkInstructions
-    ? recipe.drinkInstructions.split(/\.\s+/).filter((s) => s.trim().length > 0)
-    : [];
   const ingredientList = recipe?.drinkIngredients
     ? recipe.drinkIngredients.split(";").filter((s) => s.trim().length > 0)
     : [];
+  const instructionSteps = recipe?.drinkInstructions
+    ? recipe.drinkInstructions.split(/\.\s+/).filter((s) => s.trim().length > 0)
+    : [];
 
   // -------------------
-  // Rating handler
+  // Handle rating
   // -------------------
   const handleRating = async (rating) => {
-    if (!currentUser) {
-      navigate("/login");
-      return;
-    }
+    if (!isLoggedIn) return navigate("/login");
 
-    setRecipe({ ...recipe, userRating: rating });
+    setUserRating(rating);
 
     try {
-      const response = await fetch("http://localhost:8080/api/ratings/add", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({
-          drinkId: recipe.id,
-          userId: currentUser.id,
-          rating,
-        }),
-      });
-      if (!response.ok) throw new Error("Failed to save rating");
+      const res = await fetch(
+        `http://localhost:8080/api/drinks/${id}/ratings/add`,
+        {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({
+            userId: currentUser.id,
+            drinkId: recipe.id,
+            stars: rating,
+          }),
+        },
+      );
+
+      if (!res.ok) throw new Error("Failed to save rating");
+      await fetchRatings(); // refresh average and user ratings
     } catch (err) {
       console.error(err);
       alert("Error saving rating");
@@ -114,24 +148,18 @@ const RecipeDetailsPage = ({ currentUser }) => {
   };
 
   // -------------------
-  // Favorite handler
+  // Toggle favorite
   // -------------------
   const toggleFavorite = async () => {
-    if (!currentUser) {
-      navigate("/login");
-      return;
-    }
+    if (!isLoggedIn) return navigate("/login");
 
     try {
-      await fetch("http://localhost:8080/api/favorites/add", {
+      await fetch(`http://localhost:8080/api/favorites/add`, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({
-          drinkId: recipe.id,
-          userId: currentUser.id,
-        }),
+        body: JSON.stringify({ userId: currentUser.id, drinkId: recipe.id }),
       });
-      setRecipe({ ...recipe, isFavorite: !recipe.isFavorite });
+      setRecipe((prev) => ({ ...prev, isFavorite: !prev.isFavorite }));
     } catch (err) {
       console.error(err);
       alert("Error saving favorite");
@@ -139,34 +167,30 @@ const RecipeDetailsPage = ({ currentUser }) => {
   };
 
   // -------------------
-  // Submit comment handler
+  // Submit comment
   // -------------------
   const submitReview = async () => {
-    if (!currentUser) {
-      navigate("/login");
-      return;
-    }
-
-    if (!reviewText.trim()) {
-      alert("Review cannot be empty");
-      return;
-    }
+    if (!isLoggedIn) return navigate("/login");
+    if (!reviewText.trim()) return alert("Review cannot be empty");
 
     try {
-      const response = await fetch(`http://localhost:8080/api/drinks/${recipe.id}/comments`, {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({
-          userId: currentUser.id,
-          drinkId: recipe.id,
-          commentText: reviewText,
-        }),
-      });
+      const res = await fetch(
+        `http://localhost:8080/api/drinks/${id}/comments`,
+        {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({
+            userId: currentUser.id,
+            drinkId: recipe.id,
+            commentText: reviewText,
+          }),
+        },
+      );
 
-      if (!response.ok) throw new Error("Failed to submit review");
+      if (!res.ok) throw new Error("Failed to submit review");
 
-      const newComment = await response.json();
-      setComments((prev) => [newComment, ...prev]); // prepend new comment
+      const newComment = await res.json();
+      setComments((prev) => [newComment, ...prev]);
       setReviewText("");
     } catch (err) {
       console.error(err);
@@ -176,7 +200,9 @@ const RecipeDetailsPage = ({ currentUser }) => {
 
   return (
     <main className="recipe-details-page">
-      <button onClick={() => navigate("/recipes")}>← Back to All Recipes</button>
+      <button onClick={() => navigate("/recipes")}>
+        ← Back to All Recipes
+      </button>
 
       <div className="recipe-details-header">
         <img
@@ -184,41 +210,46 @@ const RecipeDetailsPage = ({ currentUser }) => {
           src={recipeImages[recipe.imageId] || recipeImages["fallback.jpg"]}
           alt={recipe.drinkName}
         />
-        <div>
-          <h1>{recipe.drinkName}</h1>
-          <h3>{recipe.spiritCategoryTitle || "No Spirit Category"}</h3>
-          <h3>{recipe.themeCategoryTitle || "No Theme Category"}</h3>
+      </div>
+      <div>
+        <h1>{recipe.drinkName}</h1>
+        <h3>{recipe.spiritCategoryTitle || "No Spirit Category"}</h3>
+        <h3>{recipe.themeCategoryTitle || "No Theme Category"}</h3>
 
-          {!isLoggedIn && (
-            <div className="login-prompt">
-              <p>🔒 Log in to rate, save recipes, and leave reviews!</p>
-            </div>
+        {!isLoggedIn && (
+          <div className="login-prompt">
+            <p>🔒 Log in to rate, save recipes, and leave reviews!</p>
+          </div>
+        )}
+
+        {/* Rating */}
+        <div className="recipe-rating">
+          <h3>Rate this recipe:</h3>
+          {/* Average rating display */}
+          {recipe.averageRating ? (
+            <p>
+              Average rating: {recipe.averageRating.toFixed(1)} / {maxRating} ⭐
+            </p>
+          ) : (
+            <p>No ratings yet</p>
           )}
 
-          {/* Rating */}
-          <div className="recipe-rating">
-            <h3>Rate this recipe:</h3>
-            <div className="stars">
-              {Array.from({ length: maxRating }, (_, i) => {
-                const starNumber = i + 1;
-                return (
-                  <span
-                    key={starNumber}
-                    className={`star ${
-                      starNumber <= (recipe.userRating || 0) ? "filled" : ""
-                    } ${!isLoggedIn ? "disabled" : ""}`}
-                    onClick={() => handleRating(starNumber)}
-                  >
-                    ★
-                  </span>
-                );
-              })}
-            </div>
-            {recipe?.userRating > 0 && (
-              <p>
-                You rated this recipe {recipe.userRating} out of {maxRating} stars
-              </p>
-            )}
+          {/* Stars for current user */}
+          <div className="stars">
+            {Array.from({ length: maxRating }, (_, i) => {
+              const starNumber = i + 1;
+              const isFilled = starNumber <= (userRating || 0);
+              return (
+                <span
+                  key={starNumber}
+                  className={`star ${isFilled ? "filled" : ""} ${!isLoggedIn ? "disabled" : ""}`}
+                  onClick={() => isLoggedIn && handleRating(starNumber)}
+                  style={{ cursor: isLoggedIn ? "pointer" : "not-allowed" }}
+                >
+                  ★
+                </span>
+              );
+            })}
           </div>
 
           {/* Favorite */}
@@ -238,8 +269,8 @@ const RecipeDetailsPage = ({ currentUser }) => {
       <section>
         <h2>Ingredients</h2>
         <ul>
-          {ingredientList.length > 0 ? (
-            ingredientList.map((item, index) => <li key={index}>{item}</li>)
+          {ingredientList.length ? (
+            ingredientList.map((item, i) => <li key={i}>{item}</li>)
           ) : (
             <li>No ingredients listed</li>
           )}
@@ -250,15 +281,15 @@ const RecipeDetailsPage = ({ currentUser }) => {
       <section>
         <h2>Instructions</h2>
         <ol>
-          {instructionSteps.length > 0 ? (
-            instructionSteps.map((step, index) => <li key={index}>{step}.</li>)
+          {instructionSteps.length ? (
+            instructionSteps.map((step, i) => <li key={i}>{step}.</li>)
           ) : (
             <li>No instructions listed</li>
           )}
         </ol>
       </section>
 
-      {/* Review Form */}
+      {/* Review form */}
       <section className="review-section">
         <h2>Leave a Review</h2>
         {!isLoggedIn ? (
@@ -282,14 +313,12 @@ const RecipeDetailsPage = ({ currentUser }) => {
         {comments.length === 0 ? (
           <p>No reviews yet.</p>
         ) : (
-          comments.map((comment) => (
-            <div key={comment.id} className="comment-card">
-              <p>{comment.commentText}</p>
+          comments.map((c) => (
+            <div key={c.id} className="comment-card">
+              <p>{c.commentText}</p>
               <small>
-                {comment.username} •{" "}
-                {comment.createdAt
-                  ? new Date(comment.createdAt).toLocaleDateString()
-                  : ""}
+                {c.username} •{" "}
+                {c.createdAt ? new Date(c.createdAt).toLocaleDateString() : ""}
               </small>
             </div>
           ))
