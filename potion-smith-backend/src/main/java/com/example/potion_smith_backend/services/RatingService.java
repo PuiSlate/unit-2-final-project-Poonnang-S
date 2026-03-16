@@ -27,18 +27,24 @@ public class RatingService {
     }
 
     public List<Rating> getRatingsByDrinkId(int drinkId) {
-        return ratingRepository.findByDrinkId(drinkId);
+        return ratingRepository.findByDrink_Id(drinkId);
     }
 
     public Rating addRating(RatingDTO ratingDTO) {
 
         Drink drink = drinkRepository.findById(ratingDTO.getDrinkId())
-                .orElseThrow(() -> new RuntimeException("Drink not found with id: " + ratingDTO.getDrinkId()));
+                .orElseThrow(() -> new RuntimeException(
+                        "Drink not found with id: " + ratingDTO.getDrinkId()));
 
         User user = userRepository.findById(ratingDTO.getUserId())
-                .orElseThrow(() -> new RuntimeException("User not found with id: " + ratingDTO.getUserId()));
+                .orElseThrow(() -> new RuntimeException(
+                        "User not found with id: " + ratingDTO.getUserId()));
 
-        Rating rating = new Rating();
+        // Check if rating already exists
+        Rating rating = ratingRepository
+                .findByUser_IdAndDrink_Id(user.getId(), drink.getId())
+                .orElse(new Rating());
+
         rating.setStars(ratingDTO.getStars());
         rating.setDrink(drink);
         rating.setUser(user);
@@ -47,6 +53,6 @@ public class RatingService {
     }
 
     public List<Rating> getRatingsByUser(int userId) {
-        return ratingRepository.findByUserId(userId);
+        return ratingRepository.findByUser_Id(userId);
     }
 }

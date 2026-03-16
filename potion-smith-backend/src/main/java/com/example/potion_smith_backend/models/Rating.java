@@ -30,7 +30,6 @@ public class Rating {
     @JsonBackReference
     private Drink drink;
 
-
     public Rating() {
     }
 
