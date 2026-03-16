@@ -2,7 +2,7 @@ import { useParams, useNavigate } from "react-router-dom";
 import { useEffect, useState } from "react";
 import { recipeImages } from "../../../assets/images/images";
 
-const RecipeDetailsPage = () => {
+const RecipeDetailsPage = ({currentUser}) => {
   const { id } = useParams(); // id from URL
   const navigate = useNavigate();
   const [recipe, setRecipe] = useState(null);
@@ -59,13 +59,60 @@ const RecipeDetailsPage = () => {
 
   const maxRating = 5;
 
-  const handleRating = (rating) => {
-    setRecipe({ ...recipe, userRating: rating });
-  };
+  //  Handle user rating submission
+  const handleRating = async (rating) => {
+  if (!currentUser) {
+    navigate("/login"); // redirect to login if not logged in
+    return;
+  }
 
-  const toggleFavorite = () => {
+  // Update local UI immediately for rating feedback
+  setRecipe({ ...recipe, userRating: rating });
+
+  // Send rating to backend
+  try {
+    const response = await fetch("http://localhost:8080/api/ratings/add", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({
+        drinkId: recipe.id,
+        userId: currentUser.id,
+        rating: rating,
+      }),
+    });
+
+    if (!response.ok) {
+      throw new Error("Failed to save rating");
+    }
+
+    const data = await response.json();
+    console.log("Rating saved:", data);
+  } catch (err) {
+    console.error(err);
+    alert("There was an error saving your rating. Please try again.");
+  }
+};
+
+  const toggleFavorite = async () => {
+    if (!currentUser) {
+      navigate("/login");
+      return;
+    }
+// Send favorite to backend
+    await fetch("http://localhost:8080/api/favorites/add", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({
+        drinkId: recipe.id,
+        userId: currentUser.id
+      }),
+    });
+
+    // Update local UI immediately for favorite feedback
     setRecipe({ ...recipe, isFavorite: !recipe.isFavorite });
-  };
+  }
 
   const instructionSteps = recipe.drinkInstructions
     ? recipe.drinkInstructions.split(/\.\s+/).filter((s) => s.trim().length > 0)
