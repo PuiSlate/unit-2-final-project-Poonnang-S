@@ -106,6 +106,12 @@
   color: #333;
 }
 
+.star.disabled {
+  opacity: 0.4;
+  cursor: not-allowed;
+}
+
+
 /* -------------------------------
    Ingredients and Instructions
 ---------------------------------*/
@@ -143,6 +149,20 @@
 .favorite-btn:hover {
     opacity: 0.85;
 }
+
+.favorite-section button:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+/* Login prompt */
+.login-prompt {
+  background: #f5f5f5;
+  padding: 12px;
+  border-radius: 8px;
+  margin: 15px 0;
+}
+
 /* -------------------------------
    Responsive Adjustments
 ---------------------------------*/

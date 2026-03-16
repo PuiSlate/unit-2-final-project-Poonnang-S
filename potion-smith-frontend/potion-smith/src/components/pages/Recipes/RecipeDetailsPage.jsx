@@ -8,6 +8,8 @@ const RecipeDetailsPage = () => {
   const [recipe, setRecipe] = useState(null);
   const [error, setError] = useState("");
   const [loading, setLoading] = useState(true);
+  const isLoggedIn = !!localStorage.getItem("Token"); // Login state check
+  const [reviewText, setReviewText] = useState(""); // State for review input
 
   useEffect(() => {
     const fetchRecipe = async () => {
@@ -21,7 +23,9 @@ const RecipeDetailsPage = () => {
       setError("");
 
       try {
-        const response = await fetch(`http://localhost:8080/api/drinks/details/${id}`);
+        const response = await fetch(
+          `http://localhost:8080/api/drinks/details/${id}`,
+        );
 
         if (response.status === 404) {
           setError("Recipe not found");
@@ -47,7 +51,9 @@ const RecipeDetailsPage = () => {
     return (
       <div>
         <h2>{error}</h2>
-        <button onClick={() => navigate("/recipes")}>← Back to All Recipes</button>
+        <button onClick={() => navigate("/recipes")}>
+          ← Back to All Recipes
+        </button>
       </div>
     );
 
@@ -71,7 +77,9 @@ const RecipeDetailsPage = () => {
 
   return (
     <main className="recipe-details-page">
-      <button onClick={() => navigate("/recipes")}>← Back to All Recipes</button>
+      <button onClick={() => navigate("/recipes")}>
+        ← Back to All Recipes
+      </button>
 
       <div className="recipe-details-header">
         <img
@@ -84,6 +92,13 @@ const RecipeDetailsPage = () => {
           <h3>{recipe.spiritCategoryTitle || "No Spirit Category"}</h3>
           <h3>{recipe.themeCategoryTitle || "No Theme Category"}</h3>
 
+          {/* Login Prompt banner */}
+          {!isLoggedIn && (
+            <div className="login-prompt">
+              <p>🔒 Log in to rate, save recipes, and leave reviews!</p>
+            </div>
+          )}
+
           {/* Rating Section */}
           <div className="recipe-rating">
             <h3>Rate this recipe:</h3>
@@ -93,7 +108,7 @@ const RecipeDetailsPage = () => {
                 return (
                   <span
                     key={starNumber}
-                    className={`star ${starNumber <= (recipe.userRating || 0) ? "filled" : ""}`}
+                    className={`star ${starNumber <= (recipe.userRating || 0) ? "filled" : ""} ${!isLoggedIn ? "disabled" : ""}`} // Disable if not logged in
                     onClick={() => handleRating(starNumber)}
                   >
                     ★
@@ -103,7 +118,8 @@ const RecipeDetailsPage = () => {
             </div>
             {recipe.userRating > 0 && (
               <p>
-                You rated this recipe {recipe.userRating} out of {maxRating} stars
+                You rated this recipe {recipe.userRating} out of {maxRating}{" "}
+                stars
               </p>
             )}
           </div>
@@ -112,6 +128,7 @@ const RecipeDetailsPage = () => {
           <div className="favorite-section">
             <button
               className={recipe.isFavorite ? "favorited" : ""}
+              disabled={!isLoggedIn} // Disable if not logged in
               onClick={toggleFavorite}
             >
               {recipe.isFavorite ? "❤️ Favorited" : "🤍 Save Recipe"}
@@ -124,9 +141,13 @@ const RecipeDetailsPage = () => {
       <section>
         <h2>Ingredients</h2>
         <ul>
-          {ingredientList.length > 0
-            ? ingredientList.map((item, index) => <li key={`ing-${index}`}>{item}</li>)
-            : <li>No ingredients listed</li>}
+          {ingredientList.length > 0 ? (
+            ingredientList.map((item, index) => (
+              <li key={`ing-${index}`}>{item}</li>
+            ))
+          ) : (
+            <li>No ingredients listed</li>
+          )}
         </ul>
       </section>
 
@@ -134,10 +155,34 @@ const RecipeDetailsPage = () => {
       <section>
         <h2>Instructions</h2>
         <ol>
-          {instructionSteps.length > 0
-            ? instructionSteps.map((step, index) => <li key={`step-${index}`}>{step}.</li>)
-            : <li>No instructions listed</li>}
+          {instructionSteps.length > 0 ? (
+            instructionSteps.map((step, index) => (
+              <li key={`step-${index}`}>{step}.</li>
+            ))
+          ) : (
+            <li>No instructions listed</li>
+          )}
         </ol>
+      </section>
+
+      {/* Review Section */}
+      <section className="review-section">
+        <h2>Leave a Review</h2>
+
+        {!isLoggedIn ? (
+          <p>Please log in to leave a review.</p>
+        ) : (
+          <>
+            <textarea
+              placeholder="Share your thoughts about this recipe..."
+              value={reviewText}
+              onChange={(e) => setReviewText(e.target.value)}
+              rows="4"
+            />
+
+            <button onClick={submitReview}>Submit Review</button>
+          </>
+        )}
       </section>
     </main>
   );
