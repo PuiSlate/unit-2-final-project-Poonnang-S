@@ -28,7 +28,7 @@ public class Drink {
     private String drinkIngredients;
 
     private String imageId;
-    private boolean onWeeklyFeature;
+    private boolean onWeeklyFeature = false;
 
 
     // One drink can have many comments

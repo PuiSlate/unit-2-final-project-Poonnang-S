@@ -16,6 +16,7 @@ public class DrinkResponseDTO {
     private String themeCategoryTitle;
     private List<CommentResponseDTO> comments;
     private List<RatingResponseDTO> ratings;
+    private boolean onWeeklyFeature;
 
     public DrinkResponseDTO(Drink drink) {
         this.id = drink.getId();
@@ -23,6 +24,7 @@ public class DrinkResponseDTO {
         this.drinkIngredients = drink.getDrinkIngredients();
         this.drinkInstructions = drink.getDrinkInstructions();
         this.imageId = drink.getImageId();
+        this.onWeeklyFeature = drink.isOnWeeklyFeature();
 
         this.spiritCategoryTitle = drink.getSpiritCategory() != null
                 ? drink.getSpiritCategory().getTitle()
@@ -120,5 +122,14 @@ public class DrinkResponseDTO {
 
     public void setRatings(List<RatingResponseDTO> ratings) {
         this.ratings = ratings;
+    }
+
+    public void setOnWeeklyFeature(boolean onWeeklyFeature) {
+        this.onWeeklyFeature = onWeeklyFeature;
+    }
+
+    public boolean isOnWeeklyFeature() {
+        return onWeeklyFeature;
+
     }
 }
