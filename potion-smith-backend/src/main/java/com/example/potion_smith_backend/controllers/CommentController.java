@@ -24,8 +24,7 @@ public class CommentController {
 
     @PostMapping("")
     public Comment addComment(@PathVariable int drinkId, @RequestBody CommentDTO commentData) {
-        Comment comment = new Comment(commentData.getCommentText(), commentData.getUserId(), commentData.getDrinkId());
-        return commentService.addComment(drinkId, comment);
+        return commentService.addCommentWithUser(drinkId, commentData);
     }
 
     @DeleteMapping("/{commentId}")

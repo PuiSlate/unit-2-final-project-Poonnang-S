@@ -14,11 +14,16 @@ public class CommentDTO {
     @NotNull(message = "Drink ID is required")
     private int drinkId;
 
+    public CommentDTO() {
+    }
+
     public CommentDTO(String commentText, int userId, int drinkId) {
         this.commentText = commentText;
         this.userId = userId;
         this.drinkId = drinkId;
     }
+
+
 
     public String getCommentText() {
         return commentText;
