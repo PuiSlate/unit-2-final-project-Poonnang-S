@@ -6,37 +6,45 @@ function LogInForm({ setIsLoggedIn, setCurrentUser }) {
   const [password, setPassword] = useState("");
   const navigate = useNavigate();
 
-  function handleSubmit(e) {
+  const handleSubmit = async (e) => {
     e.preventDefault();
 
-    // Handle login logic here
-    fetch("http://localhost:8080/api/users/login", {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-      },
-      body: JSON.stringify({
-        email: email,
-        password: password,
-      }),
-    })
-      .then((res) => {
-        if (!res.ok) throw new Error("Invalid credentials");
-        return res.json();
-      })
-      .then((data) => {
-        setIsLoggedIn(true);
-        setCurrentUser(data); // save user info
-        navigate("/dashboard"); // redirect to dashboard after login
-      })
-      .catch((err) => {
-        alert(err.message);
+    try {
+      const response = await fetch("http://localhost:8080/api/users/login", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json"
+        },
+        body: JSON.stringify({
+          email: email,
+          password: password
+        })
       });
-  }
+
+      if (!response.ok) {
+        throw new Error("Invalid credentials");
+      }
+
+      const user = await response.json();
+
+      // save login state
+      localStorage.setItem("currentUser", JSON.stringify(user));
+
+      setIsLoggedIn(true);
+      setCurrentUser(user);
+
+      // redirect to dashboard
+      navigate("/dashboard");
+
+    } catch (err) {
+      alert(err.message);
+    }
+  };
 
   return (
     <form onSubmit={handleSubmit}>
       <h2>Log In</h2>
+
       <input
         type="email"
         value={email}
@@ -44,6 +52,7 @@ function LogInForm({ setIsLoggedIn, setCurrentUser }) {
         placeholder="Email"
         required
       />
+
       <input
         type="password"
         value={password}
@@ -51,6 +60,7 @@ function LogInForm({ setIsLoggedIn, setCurrentUser }) {
         placeholder="Password"
         required
       />
+
       <button type="submit">Log In</button>
     </form>
   );
