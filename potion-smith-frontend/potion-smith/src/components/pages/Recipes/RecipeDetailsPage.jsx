@@ -13,6 +13,7 @@ const RecipeDetailsPage = ({ currentUser }) => {
   const [userRating, setUserRating] = useState(0);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState("");
+  const [formError, setFormError] = useState("");
 
   const isLoggedIn = !!currentUser;
   const maxRating = 5;
@@ -33,7 +34,15 @@ const RecipeDetailsPage = ({ currentUser }) => {
       else {
         const data = await res.json();
 
-        // Determine current user's rating
+        // Determine if current user has favorited this recipe
+        const userFav = currentUser
+        ? data.favorites?.some(f => f.userId === currentUser.id)
+        : false;
+
+        // Add a property to the recipe for easier UI handling
+        data.isFavorite = userFav;
+
+        // Determine current user's rating if exists
         if (currentUser && data.ratings && data.ratings.length > 0) {
           const existingRating = data.ratings.find(
             (r) => r.userId === currentUser.id,
@@ -43,10 +52,11 @@ const RecipeDetailsPage = ({ currentUser }) => {
         }
 
         setRecipe(data);
+        setFormError("");
       }
     } catch (err) {
       console.error(err);
-      setError("Error fetching recipe");
+      setFormError("Error fetching recipe");
     } finally {
       setLoading(false);
     }
@@ -135,6 +145,7 @@ const RecipeDetailsPage = ({ currentUser }) => {
     if (!isLoggedIn) return navigate("/login");
 
     setUserRating(rating);
+    setFormError("");
 
     try {
       const res = await fetch(
@@ -154,7 +165,7 @@ const RecipeDetailsPage = ({ currentUser }) => {
       await fetchRatings(); // refresh average and user ratings
     } catch (err) {
       console.error(err);
-      alert("Error saving rating");
+      setFormError("Error saving rating");
     }
   };
 
@@ -165,15 +176,34 @@ const RecipeDetailsPage = ({ currentUser }) => {
     if (!isLoggedIn) return navigate("/login");
 
     try {
-      await fetch(`http://localhost:8080/api/favorites/add`, {
+    if (recipe.isFavorite) {
+      // Find the favorite ID from backend (might need to fetch it first)
+      const res = await fetch(
+        `http://localhost:8080/api/drinks/${recipe.id}/favorites`
+      );
+      const favorites = await res.json();
+      const fav = favorites.find((f) => f.userId === currentUser.id);
+
+      if (fav) {
+        await fetch(
+          `http://localhost:8080/api/drinks/${recipe.id}/favorites/${fav.id}`,
+          { method: "DELETE" }
+        );
+      }
+    } else {
+      // Add favorite
+      await fetch(`http://localhost:8080/api/drinks/${recipe.id}/favorites`, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ userId: currentUser.id, drinkId: recipe.id }),
+        body: JSON.stringify({ userId: currentUser.id }),
       });
-      setRecipe((prev) => ({ ...prev, isFavorite: !prev.isFavorite }));
+    }
+
+    setRecipe((prev) => ({ ...prev, isFavorite: !prev.isFavorite }));
+    setFormError("");
     } catch (err) {
       console.error(err);
-      alert("Error saving favorite");
+      setFormError("Error saving favorite");
     }
   };
 
@@ -182,7 +212,7 @@ const RecipeDetailsPage = ({ currentUser }) => {
   // -------------------
   const submitReview = async () => {
     if (!isLoggedIn) return navigate("/login");
-    if (!reviewText.trim()) return alert("Review cannot be empty");
+    if (!reviewText.trim()) return setFormError("Review cannot be empty");
 
     try {
       const res = await fetch(
@@ -203,9 +233,10 @@ const RecipeDetailsPage = ({ currentUser }) => {
       const newComment = await res.json();
       setComments((prev) => [newComment, ...prev]);
       setReviewText("");
+      setFormError("");
     } catch (err) {
       console.error(err);
-      alert("Error submitting review");
+      setFormError("Error submitting review");
     }
   };
 
