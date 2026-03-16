@@ -43,7 +43,7 @@ const RecipesPage = () => {
   // -------------------
   const fetchSpiritOptions = async () => {
     try {
-      const res = await fetch("http://localhost:8080/api/spirits");
+      const res = await fetch("http://localhost:8080/api/spirit-categories");
       if (!res.ok) throw new Error("Failed to load spirit categories");
       const data = await res.json();
       setSpiritOptions(data);
@@ -54,10 +54,14 @@ const RecipesPage = () => {
 
   const fetchThemeOptions = async () => {
     try {
-      const res = await fetch("http://localhost:8080/api/themes");
+      const res = await fetch("http://localhost:8080/api/theme-categories");
       if (!res.ok) throw new Error("Failed to load theme categories");
       const data = await res.json();
-      setThemeOptions(data);
+
+      // Extract only the titles for the dropdown
+    const titles = data.map((theme) => theme.title);
+    setThemeOptions(titles);
+    
     } catch (err) {
       console.error(err);
     }
@@ -101,9 +105,9 @@ const RecipesPage = () => {
           onChange={(e) => setSelectedSpirit(e.target.value)}
         >
           <option value="">All Spirits</option>
-          {spiritOptions.map((option) => (
-            <option key={option.id} value={option.title}>
-              {option.title}
+          {spiritOptions.map((title) => (
+            <option key={title} value={title}>
+              {title}
             </option>
           ))}
         </select>
@@ -113,9 +117,9 @@ const RecipesPage = () => {
           onChange={(e) => setSelectedTheme(e.target.value)}
         >
           <option value="">All Themes</option>
-          {themeOptions.map((option) => (
-            <option key={option.id} value={option.title}>
-              {option.title}
+          {themeOptions.map((title) => (
+            <option key={title} value={title}>
+              {title}
             </option>
           ))}
         </select>
