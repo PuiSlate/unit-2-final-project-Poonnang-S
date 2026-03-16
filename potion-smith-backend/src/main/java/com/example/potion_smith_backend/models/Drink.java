@@ -5,6 +5,7 @@ import jakarta.persistence.*;
 
 import javax.swing.*;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
 
@@ -162,4 +163,11 @@ public class Drink {
     }
 
 
+    public Arrays getComments() {
+        return null;
+    }
+
+    public Arrays getRatings() {
+        return null;
+    }
 }

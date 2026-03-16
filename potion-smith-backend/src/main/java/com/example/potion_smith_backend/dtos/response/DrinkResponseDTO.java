@@ -2,6 +2,10 @@ package com.example.potion_smith_backend.dtos.response;
 
 import com.example.potion_smith_backend.models.Drink;
 
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
+
 public class DrinkResponseDTO {
     private int id;
     private String drinkName;
@@ -10,6 +14,8 @@ public class DrinkResponseDTO {
     private String imageId;
     private String spiritCategoryTitle;
     private String themeCategoryTitle;
+    private List<CommentResponseDTO> comments;
+    private List<RatingResponseDTO> ratings;
 
     public DrinkResponseDTO(Drink drink) {
         this.id = drink.getId();
@@ -17,16 +23,33 @@ public class DrinkResponseDTO {
         this.drinkIngredients = drink.getDrinkIngredients();
         this.drinkInstructions = drink.getDrinkInstructions();
         this.imageId = drink.getImageId();
+
         this.spiritCategoryTitle = drink.getSpiritCategory() != null
                 ? drink.getSpiritCategory().getTitle()
                 : null;
+
         this.themeCategoryTitle = drink.getThemeCategory() != null
                 ? drink.getThemeCategory().getTitle()
                 : null;
+
+        this.comments = new ArrayList<>();
+        if (drink.getComments() != null) {
+            for (Arrays comment : Arrays.asList(drink.getComments())) {
+                this.comments.add(new CommentResponseDTO(comment));
+            }
+        }
+
+        this.ratings = new ArrayList<>();
+        if (drink.getRatings() != null) {
+            for (Arrays rating : Arrays.asList(drink.getRatings())) {
+                this.ratings.add(new RatingResponseDTO(rating));
+            }
+        }
     }
 
-//    Getters & Setters
-
+    // ----------------------------
+    // Getters & Setters
+    // ----------------------------
     public int getId() {
         return id;
     }
@@ -67,7 +90,6 @@ public class DrinkResponseDTO {
         this.imageId = imageId;
     }
 
-
     public String getSpiritCategoryTitle() {
         return spiritCategoryTitle;
     }
@@ -82,5 +104,21 @@ public class DrinkResponseDTO {
 
     public void setThemeCategoryTitle(String themeCategoryTitle) {
         this.themeCategoryTitle = themeCategoryTitle;
+    }
+
+    public List<CommentResponseDTO> getComments() {
+        return comments;
+    }
+
+    public void setComments(List<CommentResponseDTO> comments) {
+        this.comments = comments;
+    }
+
+    public List<RatingResponseDTO> getRatings() {
+        return ratings;
+    }
+
+    public void setRatings(List<RatingResponseDTO> ratings) {
+        this.ratings = ratings;
     }
 }

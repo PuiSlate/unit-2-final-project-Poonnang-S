@@ -2,6 +2,8 @@ package com.example.potion_smith_backend.dtos.response;
 
 import com.example.potion_smith_backend.models.Rating;
 
+import java.util.Arrays;
+
 public class RatingResponseDTO {
 
     private int id;
@@ -24,6 +26,10 @@ public class RatingResponseDTO {
         this.userId = rating.getUser().getId();
         this.userName = rating.getUser().getUsername();
     }
+
+    public RatingResponseDTO(Arrays rating) {
+    }
+
 
     public int getId() {
         return id;
