@@ -2,7 +2,7 @@ import { useParams, useNavigate } from "react-router-dom";
 import { useEffect, useState } from "react";
 import { recipeImages } from "../../../assets/images/images";
 
-const RecipeDetailsPage = ({currentUser}) => {
+const RecipeDetailsPage = ({ currentUser }) => {
   const { id } = useParams(); // id from URL
   const navigate = useNavigate();
   const [recipe, setRecipe] = useState(null);
@@ -10,6 +10,7 @@ const RecipeDetailsPage = ({currentUser}) => {
   const [loading, setLoading] = useState(true);
   const isLoggedIn = !!localStorage.getItem("Token"); // Login state check
   const [reviewText, setReviewText] = useState(""); // State for review input
+  const [comments, setComments] = useState([]); // State for comments
 
   useEffect(() => {
     const fetchRecipe = async () => {
@@ -43,7 +44,8 @@ const RecipeDetailsPage = ({currentUser}) => {
       }
     };
 
-    fetchRecipe();
+    fetchRecipe(); //load recipe details
+    fetchComments(); //load comments when recipe loads
   }, [id]);
 
   if (loading) return <h2>Loading recipe...</h2>;
@@ -61,58 +63,58 @@ const RecipeDetailsPage = ({currentUser}) => {
 
   //  Handle user rating submission
   const handleRating = async (rating) => {
-  if (!currentUser) {
-    navigate("/login"); // redirect to login if not logged in
-    return;
-  }
-
-  // Update local UI immediately for rating feedback
-  setRecipe({ ...recipe, userRating: rating });
-
-  // Send rating to backend
-  try {
-    const response = await fetch("http://localhost:8080/api/ratings/add", {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-      },
-      body: JSON.stringify({
-        drinkId: recipe.id,
-        userId: currentUser.id,
-        rating: rating,
-      }),
-    });
-
-    if (!response.ok) {
-      throw new Error("Failed to save rating");
+    if (!currentUser) {
+      navigate("/login"); // redirect to login if not logged in
+      return;
     }
 
-    const data = await response.json();
-    console.log("Rating saved:", data);
-  } catch (err) {
-    console.error(err);
-    alert("There was an error saving your rating. Please try again.");
-  }
-};
+    // Update local UI immediately for rating feedback
+    setRecipe({ ...recipe, userRating: rating });
+
+    // Send rating to backend
+    try {
+      const response = await fetch("http://localhost:8080/api/ratings/add", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          drinkId: recipe.id,
+          userId: currentUser.id,
+          rating: rating,
+        }),
+      });
+
+      if (!response.ok) {
+        throw new Error("Failed to save rating");
+      }
+
+      const data = await response.json();
+      console.log("Rating saved:", data);
+    } catch (err) {
+      console.error(err);
+      alert("There was an error saving your rating. Please try again.");
+    }
+  };
 
   const toggleFavorite = async () => {
     if (!currentUser) {
       navigate("/login");
       return;
     }
-// Send favorite to backend
+    // Send favorite to backend
     await fetch("http://localhost:8080/api/favorites/add", {
       method: "POST",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify({
         drinkId: recipe.id,
-        userId: currentUser.id
+        userId: currentUser.id,
       }),
     });
 
     // Update local UI immediately for favorite feedback
     setRecipe({ ...recipe, isFavorite: !recipe.isFavorite });
-  }
+  };
 
   const instructionSteps = recipe.drinkInstructions
     ? recipe.drinkInstructions.split(/\.\s+/).filter((s) => s.trim().length > 0)
@@ -121,6 +123,65 @@ const RecipeDetailsPage = ({currentUser}) => {
   const ingredientList = recipe.drinkIngredients
     ? recipe.drinkIngredients.split(";").filter((s) => s.trim().length > 0)
     : [];
+
+  // Handle review submission
+  const submitReview = async () => {
+    if (!currentUser) {
+      navigate("/login");
+      return;
+    }
+    try {
+      const response = await fetch(
+        `http://localhost:8080/api/drinks/${recipe.id}/comments`,
+        {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify({
+            userId: currentUser.id,
+            drinkId: recipe.id,
+            commentText: reviewText,
+          }),
+        },
+      );
+
+      if (!response.ok) {
+        throw new Error("Failed to submit review");
+      }
+
+      const newComment = await response.json();
+
+      console.log("Review saved:", newComment);
+
+      // Clear textarea
+      setReviewText("");
+
+      // Optional: refresh comments
+      fetchComments();
+    } catch (err) {
+      console.error(err);
+      alert("Error submitting review");
+    }
+  };
+
+  // Fetch comments for each recipe
+  const fetchComments = async () => {
+    try {
+      const response = await fetch(
+        `http://localhost:8080/api/drinks/${id}/comments`,
+      );
+
+      if (!response.ok) {
+        throw new Error("Failed to load comments");
+      }
+
+      const data = await response.json();
+      setComments(data);
+    } catch (err) {
+      console.error(err);
+    }
+  };
 
   return (
     <main className="recipe-details-page">
@@ -229,6 +290,22 @@ const RecipeDetailsPage = ({currentUser}) => {
 
             <button onClick={submitReview}>Submit Review</button>
           </>
+        )}
+      </section>
+
+      {/* Display comments under the review section */}
+      <section className="comments-list">
+        <h3>Reviews</h3>
+
+        {comments.length === 0 ? (
+          <p>No reviews yet.</p>
+        ) : (
+          comments.map((comment) => (
+            <div key={comment.id} className="comment-card">
+              <p>{comment.commentText}</p>
+              <small>User #{comment.userId}</small>
+            </div>
+          ))
         )}
       </section>
     </main>
