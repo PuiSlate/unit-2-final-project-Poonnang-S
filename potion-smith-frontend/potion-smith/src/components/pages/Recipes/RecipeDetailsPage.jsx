@@ -32,6 +32,16 @@ const RecipeDetailsPage = ({ currentUser }) => {
       else if (!res.ok) setError("Failed to load recipe");
       else {
         const data = await res.json();
+
+        // Determine current user's rating
+        if (currentUser && data.ratings && data.ratings.length > 0) {
+          const existingRating = data.ratings.find(
+            (r) => r.userId === currentUser.id,
+          );
+          data.userRating = existingRating ? existingRating.stars : 0;
+          setUserRating(data.userRating);
+        }
+
         setRecipe(data);
       }
     } catch (err) {
@@ -91,6 +101,7 @@ const RecipeDetailsPage = ({ currentUser }) => {
   // Initial load
   // -------------------
   useEffect(() => {
+    console.log("Current User:", currentUser);
     fetchRecipe();
     fetchComments();
     fetchRatings();
@@ -290,22 +301,18 @@ const RecipeDetailsPage = ({ currentUser }) => {
       </section>
 
       {/* Review form */}
-      <section className="review-section">
-        <h2>Leave a Review</h2>
-        {!isLoggedIn ? (
-          <p>Please log in to leave a review.</p>
-        ) : (
-          <>
-            <textarea
-              placeholder="Share your thoughts..."
-              value={reviewText}
-              onChange={(e) => setReviewText(e.target.value)}
-              rows="4"
-            />
-            <button onClick={submitReview}>Submit Review</button>
-          </>
-        )}
-      </section>
+      {isLoggedIn && (
+        <section className="review-section">
+          <h2>Leave a Review</h2>
+          <textarea
+            placeholder="Share your thoughts..."
+            value={reviewText}
+            onChange={(e) => setReviewText(e.target.value)}
+            rows="4"
+          />
+          <button onClick={submitReview}>Submit Review</button>
+        </section>
+      )}
 
       {/* Comments */}
       <section className="comments-list">
