@@ -1,36 +1,23 @@
 import { Link, useNavigate, useLocation } from "react-router-dom";
+import { useState } from "react";
 
 const NavBar = ({ isLoggedIn, setIsLoggedIn, currentUser, setCurrentUser }) => {
   const navigate = useNavigate();
-  const location = useLocation();
+ const [searchText, setSearchText] = useState("");
 
-  // Read search text directly from URL
-  const params = new URLSearchParams(location.search);
-  const searchQuery = params.get("search") || "";
 
+// Simplified NavBar search to search recipe nams with simple logic
   const handleSearch = (e) => {
     e.preventDefault();
 
-    // If search is empty, remove the param instead of leaving "?search="
-    if (searchQuery.trim() === "") {
-      params.delete("search");
+    if (searchText.trim() === "") {
+      navigate("/recipes");
     } else {
-      params.set("search", searchQuery.trim());
+      navigate(`/recipes?search=${searchText.trim()}`);
     }
-
-    navigate(`/recipes?${params.toString()}`);
   };
 
-  const handleChange = (e) => {
-    const value = e.target.value;
-    const newParams = new URLSearchParams(location.search);
 
-    if (value === "") newParams.delete("search");
-    else newParams.set("search", value);
-
-    // Update the URL as the user types
-    navigate(`/recipes?${newParams.toString()}`, { replace: true });
-  };
 
   return (
     <div className="navbar">
@@ -76,9 +63,9 @@ const NavBar = ({ isLoggedIn, setIsLoggedIn, currentUser, setCurrentUser }) => {
       <form className="navbar-search" onSubmit={handleSearch}>
         <input
           type="text"
-          placeholder="Search recipes…"
-          value={searchQuery}
-          onChange={handleChange}
+          placeholder="Search recipe name…"
+          value={searchText}
+          onChange={(e) => setSearchText(e.target.value)}
           className="search-input"
         />
         <button type="submit" className="search-button" aria-label="Search">
