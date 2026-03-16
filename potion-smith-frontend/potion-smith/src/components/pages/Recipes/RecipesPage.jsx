@@ -1,122 +1,147 @@
+import { useEffect, useState } from "react";
+import { useNavigate } from "react-router-dom";
 import RecipeCard from "./RecipeCard";
-import { useMemo, useState, useEffect } from "react";
-import { useNavigate, useLocation } from "react-router-dom";
+import { recipeImages } from "../../../assets/images/images";
+import Spacer from "../../common/spacer";
 
 const RecipesPage = () => {
   const navigate = useNavigate();
-  const location = useLocation();
 
+  // -------------------
+  // State
+  // -------------------
   const [recipes, setRecipes] = useState([]);
   const [spiritOptions, setSpiritOptions] = useState([]);
+  const [themeOptions, setThemeOptions] = useState([]);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState("");
 
-  // Fetch recipes on component mount
+  const [selectedSpirit, setSelectedSpirit] = useState("");
+  const [selectedTheme, setSelectedTheme] = useState("");
+
+  // -------------------
+  // Fetch recipes
+  // -------------------
+  const fetchRecipes = async () => {
+    setLoading(true);
+    setError("");
+    try {
+      const response = await fetch("http://localhost:8080/api/drinks");
+      if (!response.ok) throw new Error("Failed to load recipes");
+      const data = await response.json();
+      setRecipes(data);
+    } catch (err) {
+      console.error("Error fetching recipes:", err);
+      setError("Error fetching recipes");
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  // -------------------
+  // Fetch category options
+  // -------------------
+  const fetchSpiritOptions = async () => {
+    try {
+      const res = await fetch("http://localhost:8080/api/spirit-categories");
+      if (!res.ok) throw new Error("Failed to load spirit categories");
+      const data = await res.json();
+      setSpiritOptions(data);
+    } catch (err) {
+      console.error(err);
+    }
+  };
+
+  const fetchThemeOptions = async () => {
+    try {
+      const res = await fetch("http://localhost:8080/api/theme-categories");
+      if (!res.ok) throw new Error("Failed to load theme categories");
+      const data = await res.json();
+
+      // Extract only the titles for the dropdown
+    const titles = data.map((theme) => theme.title);
+    setThemeOptions(titles);
+    
+    } catch (err) {
+      console.error(err);
+    }
+  };
+
+  // -------------------
+  // Initial data load
+  // -------------------
   useEffect(() => {
-    fetch("http://localhost:8080/api/drinks")
-      .then((res) => res.json())
-      .then((data) => {
-        // Map the drinks
-        const mapped = data.map((drink) => ({
-          id: drink.id,
-          drinkName: drink.drinkName,
-          ingredients: drink.drinkIngredients,
-          instructions: drink.drinkInstructions,
-          imageId: drink.imageId,
-          onWeeklyFeature: drink.onWeeklyFeature,
-          spiritCategory: drink.spiritCategory?.title || "",
-          themeCategory: drink.themeCategory?.title || "",
-        }));
-
-        setRecipes(mapped);
-
-      })
-      .catch((err) => console.error("Error fetching recipes:", err));
+    fetchRecipes();
+    fetchSpiritOptions();
+    fetchThemeOptions();
   }, []);
 
+  // -------------------
+  // Filtered recipes
+  // -------------------
+  const filteredRecipes = recipes.filter((r) => {
+    const matchesSpirit = selectedSpirit ? r.spiritCategoryTitle === selectedSpirit : true;
+    const matchesTheme = selectedTheme ? r.themeCategoryTitle === selectedTheme : true;
+    return matchesSpirit && matchesTheme;
+  });
 
-  // Fetch distinct spirit categories
-useEffect(() => {
-  fetch("http://localhost:8080/api/spirit-categories")
-    .then((res) => res.json())
-    .then((data) => {
-      // Extract titles from objects
-      const titles = data.map((cat) => cat.title);
-      setSpiritOptions(titles);
-    })
-    .catch((err) => console.error("Error fetching categories:", err));
-}, []);
-
-  // Read search query from URL
-  const queryParams = new URLSearchParams(location.search);
-  const searchQuery = queryParams.get("search")?.toLowerCase() || "";
-  const selectedCategory = queryParams.get("category") || "";
-
-  // Filtering recipes based on search query and selected category
-
-  const filteredRecipes = useMemo(() => {
-    return recipes.filter((recipe) => {
-      const name = (recipe.drinkName || "").toLowerCase();
-      const category = (recipe.spiritCategory || "").toLowerCase();
-
-      const theme = (recipe.themeCategory || "").toLowerCase(); // Include theme category in search
-      const matchesSearch =
-        searchQuery === "" ||
-        name.includes(searchQuery) ||
-        category.includes(searchQuery) ||
-        theme.includes(searchQuery);
-
-      // category dropdown filter only checks spirit category, not theme category, to avoid confusion with the search filter which already includes theme category in its logic
-      const matchesCategory =
-        selectedCategory === "" ||
-        (recipe.spiritCategory || "").toLowerCase() ===
-          selectedCategory.toLowerCase();
-
-      return matchesSearch && matchesCategory;
-    });
-  }, [recipes, searchQuery, selectedCategory]);
-
- 
+  // -------------------
+  // Render
+  // -------------------
+  if (loading) return <h2>Loading recipes...</h2>;
+  if (error) return <h2>{error}</h2>;
 
   return (
     <main className="recipes-page">
       <h1>All Recipes</h1>
-      <p>
-        Welcome, brave adventurer, to the Potion Smith’s recipe compendium! Here
-        you’ll find enchanted cocktails, mystical mocktails, and legendary
-        elixirs worthy of any dungeon master’s table. Mix your ingredients
-        wisely, roll for flavor, and don’t forget to save your favorites before
-        they vanish like a disappearing spell!
-      </p>
+      <Spacer marginY="20px" />
 
-      {/* When change the dropdown, the URL search clears */}
-      <select
-        value={selectedCategory}
-        onChange={(e) => {
-          const newCategory = e.target.value;
-          const params = new URLSearchParams(location.search);
+      {/* ------------------- */}
+      {/* Category Filters */}
+      {/* ------------------- */}
+      <div className="filters">
+        <select
+          value={selectedSpirit}
+          onChange={(e) => setSelectedSpirit(e.target.value)}
+        >
+          <option value="">All Spirits</option>
+          {spiritOptions.map((title) => (
+            <option key={title} value={title}>
+              {title}
+            </option>
+          ))}
+        </select>
 
-          if (newCategory === "") params.delete("category");
-          else params.set("category", newCategory);
+        <select
+          value={selectedTheme}
+          onChange={(e) => setSelectedTheme(e.target.value)}
+        >
+          <option value="">All Themes</option>
+          {themeOptions.map((title) => (
+            <option key={title} value={title}>
+              {title}
+            </option>
+          ))}
+        </select>
+      </div>
 
-          navigate(`/recipes?${params.toString()}`);
-        }}
-      >
-        {/* Category filter dropdown */}
-        <option value="">All Categories</option>
-        {spiritOptions.map((cat) => (
-          <option key={cat} value={cat}>
-            {cat}
-          </option>
-        ))}
-      </select>
+      <Spacer marginY="20px" />
 
+      {/* ------------------- */}
+      {/* Recipe Grid */}
+      {/* ------------------- */}
       <div className="recipes-grid">
-        {filteredRecipes.map((recipe) => (
-          <RecipeCard
-            key={recipe.id}
-            recipe={recipe}
-            onClick={() => navigate(`/recipes/${recipe.id}`)}
-          />
-        ))}
+        {filteredRecipes.length > 0 ? (
+          filteredRecipes.map((recipe) => (
+            <RecipeCard
+              key={recipe.id}
+              recipe={recipe}
+              onClick={() => navigate(`/recipes/${recipe.id}`)}
+            />
+          ))
+        ) : (
+          <p>No recipes found.</p>
+        )}
       </div>
     </main>
   );

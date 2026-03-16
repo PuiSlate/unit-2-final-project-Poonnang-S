@@ -46,7 +46,7 @@ function App() {
         <Route
           path="/recipes/:id"
           element={
-            <RecipeDetailsPage />
+            <RecipeDetailsPage currentUser={currentUser} isLoggedIn={isLoggedIn} />
           }
         />
         <Route path="/contact" element={<ContactPage />} />

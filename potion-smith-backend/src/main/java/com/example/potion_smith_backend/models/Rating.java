@@ -30,7 +30,6 @@ public class Rating {
     @JsonBackReference
     private Drink drink;
 
-
     public Rating() {
     }
 
@@ -64,5 +63,13 @@ public class Rating {
 
     public void setDrink(Drink drink) {
         this.drink = drink;
+    }
+
+    public int getUserId() {
+        return user != null ? user.getId() : 0;
+    }
+
+    public int getDrinkId() {
+        return drink != null ? drink.getId() : 0;
     }
 }

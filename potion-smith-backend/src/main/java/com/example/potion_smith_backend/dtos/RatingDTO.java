@@ -1,39 +1,52 @@
 package com.example.potion_smith_backend.dtos;
 
-public class RatingDTO {
-    private int stars;
-    private int userId;
-    private int drinkId;
+import jakarta.validation.constraints.Max;
+import jakarta.validation.constraints.Min;
+import jakarta.validation.constraints.NotNull;
 
-    public RatingDTO(int stars, int userId, int drinkId) {
+public class RatingDTO {
+
+    @NotNull(message = "Stars are required")
+    @Min(1)
+    @Max(5)
+    private Integer stars;
+
+    @NotNull(message = "User ID is required")
+    private Integer userId;
+
+    @NotNull(message = "Drink ID is required")
+    private Integer drinkId;
+
+    // Default constructor needed by Jackson
+    public RatingDTO() {}
+
+    public RatingDTO(Integer stars, Integer userId, Integer drinkId) {
         this.stars = stars;
         this.userId = userId;
         this.drinkId = drinkId;
     }
 
-    public int getStars() {
+    public Integer getStars() {
         return stars;
     }
 
-    public void setStars(int stars) {
+    public void setStars(Integer stars) {
         this.stars = stars;
     }
 
-    public int getUserId() {
+    public Integer getUserId() {
         return userId;
     }
 
-    public void setUserId(int userId) {
+    public void setUserId(Integer userId) {
         this.userId = userId;
     }
 
-    public int getDrinkId() {
+    public Integer getDrinkId() {
         return drinkId;
     }
 
-    public void setDrinkId(int drinkId) {
+    public void setDrinkId(Integer drinkId) {
         this.drinkId = drinkId;
     }
-
-
 }

@@ -2,11 +2,14 @@ package com.example.potion_smith_backend.controllers;
 
 
 import com.example.potion_smith_backend.dtos.CommentDTO;
+import com.example.potion_smith_backend.dtos.response.CommentResponseDTO;
 import com.example.potion_smith_backend.models.Comment;
 import com.example.potion_smith_backend.services.CommentService;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
+import java.util.stream.Stream;
+
 
 @RestController
 @RequestMapping("/api/drinks/{drinkId}/comments")
@@ -18,14 +21,18 @@ public class CommentController {
     }
 
     @GetMapping("")
-    public List<Comment> getCommentsByDrinkId(@PathVariable int drinkId) {
-        return commentService.getCommentsByDrinkId(drinkId);
+    public List<CommentResponseDTO> getCommentsByDrinkId(@PathVariable int drinkId) {
+        return commentService.getCommentsByDrinkId(drinkId).stream()
+        .map(CommentResponseDTO::new).toList();
+    }
+
+    private <T> Stream stream() {
+        return null;
     }
 
     @PostMapping("")
     public Comment addComment(@PathVariable int drinkId, @RequestBody CommentDTO commentData) {
-        Comment comment = new Comment(commentData.getCommentText(), commentData.getUserId(), commentData.getDrinkId());
-        return commentService.addComment(drinkId, comment);
+        return commentService.addCommentWithUser(drinkId, commentData);
     }
 
     @DeleteMapping("/{commentId}")

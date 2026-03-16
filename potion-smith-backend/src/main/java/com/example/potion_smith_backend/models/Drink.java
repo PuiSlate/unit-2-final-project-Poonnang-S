@@ -5,6 +5,7 @@ import jakarta.persistence.*;
 
 import javax.swing.*;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
 
@@ -27,7 +28,7 @@ public class Drink {
     private String drinkIngredients;
 
     private String imageId;
-    private boolean onWeeklyFeature;
+    private boolean onWeeklyFeature = false;
 
 
     // One drink can have many comments
@@ -47,13 +48,13 @@ public class Drink {
 
 //    Many drinks can belong to one theme category
     @ManyToOne
-    @JoinColumn(name = "theme_category_title", referencedColumnName = "title")
+    @JoinColumn(name = "theme_category_id", referencedColumnName = "id")
     @JsonBackReference
     private ThemeCategory themeCategory;
 
 //    Many drinks can belong to one spirit category
     @ManyToOne
-    @JoinColumn(name = "spirit_category_title", referencedColumnName = "title")
+    @JoinColumn(name = "spirit_category_id", referencedColumnName = "id")
     @JsonBackReference
     private SpiritCategory spiritCategory;
 
@@ -120,6 +121,16 @@ public class Drink {
         return spiritCategory;
     }
 
+    public void setThemeCategory(ThemeCategory themeCategory) {
+        this.themeCategory = themeCategory;
+
+    }
+
+    public void setSpiritCategory(SpiritCategory spiritCategory) {
+        this.spiritCategory = spiritCategory;
+
+    }
+
     @Override
     public String toString() {
         return drinkName + " (" + drinkIngredients + "): " + drinkInstructions + " | Image ID: " + imageId + " | Weekly Feature: " + onWeeklyFeature;
@@ -151,4 +162,12 @@ public class Drink {
         return result;
     }
 
+
+    public Arrays getComments() {
+        return null;
+    }
+
+    public Arrays getRatings() {
+        return null;
+    }
 }
