@@ -24,20 +24,47 @@ Potion Smith is a **full-stack web application** that allows users to browse, se
 **Preview of UI**
 
 <details>
-<summary>Home & Login Pages</summary>
-
-</details>
+<summary>Home Page</summary>
 <div align="middle">
-  <img src="preview/potion_smith_home.png" alt="PotionSmith home" width="50%" />
+  <img src="Preview/potion_smith_home.png" alt="PotionSmith home" width="50%" />
 </div>
+</details>
 
-About Page
-Contact Page
-Recipes Page
-User Dashboard
+<details>
+<summary>Login Form</summary>
+<div align="middle">
+  <img src="Preview/potion_smith_login.png" alt="PotionSmith login" width="50%" />
+</div>
+</details>
 
+<details>
+<summary>About Page</summary>
+<div align="middle">
+  <img src="Preview/potion_smith_about.png" alt="PotionSmith about" width="50%" />
+</div>
+</details>
 
-**Home Page**
+<details>
+<summary>Contact Page</summary>
+<div align="middle">
+  <img src="Preview/potion_smith_contact.png" alt="PotionSmith contact" width="50%" />
+</div>
+</details>
+
+<details>
+<summary>Recipes Page</summary>
+<div align="middle">
+  <img src="Preview/potion_smith_recipes.png" alt="PotionSmith recipes" width="50%" />
+</div>
+</details>
+
+<details>
+<summary>User Dashboard</summary>
+<div align="middle">
+  <img src="Preview/potion_smith_user_dashboard.png" alt="PotionSmith user dashboard" width="50%" />
+</div>
+</details>
+
 
 ## Tech Stack
 **Frontend**
