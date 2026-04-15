@@ -141,6 +141,33 @@ The API should now be running on `http://localhost:8080`
    ```
    The frontend application will start and can be found in a browser, typically at `http://localhost:5173`.
 
+## Database Structure (ERD)
+This project utilizes a MySQL database structured around five core entities, managed by Hibernate with the following relationships:
+1. Drink - Comment: One to Many
+2. Drink - Rating: One to Many
+3. Drink - Favorite: One to Many
+4. User - Comment: One to Many
+5. User - Rating: One to Many
+6. User - Favorite: One to Many
 
+[Click here to see the Entity Relationship Diagram (ERD)](https://www.figma.com/board/pAIsYo7WoYB8ew11WpQ8Xu/Potion-Smith-app?node-id=0-1&t=7SGvCXDpDfZA1ES6-1)
 
+## Future Features
+**Enhanced User Authorization**
+- Refactor the Age Gate to redirect users under 21 to a curated list of non-alcoholic (0% ABV) recipes instead of blocking access entirely
+- Improve user experience while maintaining responsible content access
+  
+**Improved Subscription Form**
+- Extend the subscription form to collect users’ birth date in addition to email
+- Enable age-based personalization and content filtering
+  
+**Advanced Recipe Filtering**
+- Add filtering options for:
+  - Difficulty level (e.g., Easy, Intermediate, Advanced)
+  - Preparation time
+- Enhance recipe discoverability and user experience
+  
+**Responsive Navigation (Hamburger Menu)**
+- Implement a mobile-friendly dropdown (hamburger) menu
+- Improve accessibility and navigation on smaller screens
   
