@@ -1,7 +1,7 @@
-# Potion Smith: Full-Stack Web Application
-## About The Project
+# 🍹 Potion Smith: Full-Stack Web Application
+## 💡 About The Project
 Potion Smith is a **full-stack web application** that allows users to browse, search, and explore a curated collection of Dungeons & Dragons themed drink recipes, including cocktails and non-alcoholic options. The app focuses on delivering an engaging user experience with dynamic filtering, detailed recipe views, and user interaction features such as ratings and favorites.
-## Features
+## 🎨 Features
 
 **Recipe Discovery**
 - Browse all recipes in a responsive grid layout
@@ -17,7 +17,7 @@ Potion Smith is a **full-stack web application** that allows users to browse, se
 - Login access for registered user to leave ratings, reviews, and save as favorite
 - Navigation between pages using React Router
 
-## Key Visuals
+## 📸 Key Visuals
 **Wireframes w/ Site Map**: 
 [Click here](https://www.canva.com/design/DAHBdanOEzQ/T2NZ-o-4lq3um50FBUuyjw/edit?utm_content=DAHBdanOEzQ&utm_campaign=designshare&utm_medium=link2&utm_source=sharebutton)
 
@@ -66,7 +66,7 @@ Potion Smith is a **full-stack web application** that allows users to browse, se
 </details>
 
 
-## Tech Stack
+## 🛠 Tech Stack
 **Frontend**
 - React (Vite)
 - React Router
@@ -84,14 +84,14 @@ Potion Smith is a **full-stack web application** that allows users to browse, se
 - Hibernate
 - MySQL
 
-## Prerequisites & Installations
+## 💻 Prerequisites & Installations
 To run this project locally, you will need the following installed:
 - Node.js
 - npm or yarn
 - Java Development Kit (JDK) 21
 - MySQL Server (version 8.0+)
 
-## Back End Setup (Java/Spring Boot/MySQL)
+## 💾 Back End Setup (Java/Spring Boot/MySQL)
 1. **Clone the repository**: In the terminal, navigate to the directory where you want the project to live, then execute the following commands:
 ```
 git clone https://github.com/PuiSlate/unit-2-final-project-Poonnang-S.git # or your link,
@@ -126,7 +126,7 @@ The API should now be running on `http://localhost:8080`
   "password": "4321"
 }
 ```
-## Front End Setup (React/Vite)
+## ⚛️ Front End Setup (React/Vite)
 1. **Navigate to the front end project directory**:
    ```
    cd ../potion-smith-frontend
@@ -141,7 +141,7 @@ The API should now be running on `http://localhost:8080`
    ```
    The frontend application will start and can be found in a browser, typically at `http://localhost:5173`.
 
-## Database Structure (ERD)
+## 🗄️ Database Structure (ERD)
 This project utilizes a MySQL database structured around five core entities, managed by Hibernate with the following relationships:
 1. Drink - Comment: One to Many
 2. Drink - Rating: One to Many
@@ -152,7 +152,7 @@ This project utilizes a MySQL database structured around five core entities, man
 
 [Click here to see the Entity Relationship Diagram (ERD)](https://www.figma.com/board/pAIsYo7WoYB8ew11WpQ8Xu/Potion-Smith-app?node-id=0-1&t=7SGvCXDpDfZA1ES6-1)
 
-## Future Features
+## 🚧 Future Features
 **Enhanced User Authorization**
 - Refactor the Age Gate to redirect users under 21 to a curated list of non-alcoholic (0% ABV) recipes instead of blocking access entirely
 - Improve user experience while maintaining responsible content access
@@ -171,3 +171,7 @@ This project utilizes a MySQL database structured around five core entities, man
 - Implement a mobile-friendly dropdown (hamburger) menu
 - Improve accessibility and navigation on smaller screens
   
+## 👩🏻‍💻 Creator & Designer
+Poonnang Karaket Slate 
+[Github](https://github.com/PuiSlate) 
+[LinkedIn](https://www.linkedin.com/in/poonnang-karaket/)
